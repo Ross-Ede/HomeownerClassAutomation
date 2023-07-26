@@ -1,9 +1,9 @@
 # HomeownerClassAutomation
 
 ## Setup
-  ### 1. Installing Python
-        - Go to https://www.python.org/downloads/
-        - Under "Looking For Specific Release?" Download The Most Recent Version
+  + ### 1. Installing Python
+  + - Go to https://www.python.org/downloads/
+  + - Under "Looking For Specific Release?" Download The Most Recent Version
   ### 2. Ensure You Installed Python
 
 
