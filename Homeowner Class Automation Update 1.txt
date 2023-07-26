@@ -1,0 +1,603 @@
+Option Explicit
+
+'AUTO DAILY DATA COLLECTION---------------------------------------------------------------------------------------
+'Global Variables
+Dim finalMasterRow As Integer
+Dim finalDailyRow As Integer
+
+Dim masterSheetNames As String
+
+Dim folderPath As String
+Dim dailyFileName As String
+
+Sub lastRow(book, sheet)
+    Dim last As Integer
+    Dim cell As Range
+    If book <> "List-OnlineClass" Then 'checking if daily book, if not its the main book
+        Workbooks.Open (folderPath + dailyFileName)
+        finalDailyRow = Workbooks(dailyFileName).Worksheets(sheet).Range("A:A").Find(What:="", LookIn:=xlValues).Row
+    Else
+        finalMasterRow = Workbooks("List-OnlineClass").Worksheets("log").Range("A:A").Find(What:="", LookIn:=xlValues).Row
+    End If
+End Sub
+
+'names from master sheet
+Sub getNames()
+    Dim x As Integer
+    masterSheetNames = ""
+    lastRow "List-OnlineClass", "log" 'NOTE THIS IS HARDCODED AND IN OTHER SPOTS, FUTURE CHANGE WILL ALLOW USER TO SAVE TO ANY SHEET
+    
+    For x = 2 To finalMasterRow  'Previous Names    Current Last Name                  Current First Name
+        masterSheetNames = LCase(masterSheetNames + Workbooks("List-OnlineClass").Worksheets("log").Range("A" & x).Value) + LCase(Workbooks("List-OnlineClass").Worksheets("log").Range("B" & x).Value)
+    Next
+End Sub
+
+Sub autoUpdate()
+    
+    lastRow "List-OnlineClass", "log"
+    
+    getNames
+    
+    Dim newEnrollments As Integer
+    Dim passes As Integer
+    
+    Dim dailyFound As Boolean
+    dailyFound = False
+    
+    Dim systemDate As String
+    systemDate = Date
+    'generate date in file name
+    
+    'if generated date from file matches system date, use that file
+    'Note: using right function to start from right and get date, +5 to acccount for .xlsx/.xlsm
+    'Note: standard daily file name format as follows; baen_daily_enrollment_report_2023-06-16.xlsm
+    Dim file As String
+    Dim fileMonth As String
+    Dim fileDay As String
+    Dim fileYear As String
+    
+    'Helpful https://stackoverflow.com/questions/10380312/loop-through-files-in-a-folder-using-vba
+    folderPath = ThisWorkbook.Path + "\"
+    file = Dir(folderPath)
+    Do While Len(file) > 0
+        fileMonth = Left(Right(file, 10), 2)
+        fileDay = Left(Right(file, 7), 2)
+        fileYear = Left(Right(file, 15), 4)
+        
+        'checking if system date will correctly compare because system month and day are in 0-0 format not 00-00 format
+        If Len(Day(Date)) = 1 Then
+            fileDay = Right(fileDay, 1)
+        End If
+        
+        If Len(Month(Date)) = 1 Then
+            fileMonth = Right(fileMonth, 1)
+        End If
+        
+        'comparing dates to see if daily file is here today
+        If (fileDay = Day(systemDate)) And (fileMonth = Month(systemDate)) And (fileYear = Year(systemDate)) Then
+            dailyFound = True
+            dailyFileName = file
+            Exit Do
+        End If
+    
+        file = Dir
+    Loop
+    
+    'if no file match today then print "there are no daily files matching today"
+    If dailyFound = False Then
+        MsgBox "Please Check You've Downloaded Today's Daily File In The Same Folder As Your Master WorkBook", vbOKOnly + vbCritical, "Daily File Not Found"
+        Exit Sub
+    End If
+    
+    'now here is where names from daily sheet are compared to master sheet and if new, added
+    lastRow dailyFileName, 1
+    Dim currDailyName As String
+    Dim i As Integer
+    For i = 2 To finalDailyRow
+        Dim testPassDate As String
+        Dim temporary As String
+        currDailyName = LCase(Workbooks(dailyFileName).Worksheets(1).Range("A" & i).Value) + LCase(Workbooks(dailyFileName).Worksheets(1).Range("B" & i).Value)
+        If InStr(masterSheetNames, currDailyName) = 0 Then 'if not in list then add to it
+            
+            masterSheetNames = masterSheetNames + currDailyName
+            
+            newEnrollments = newEnrollments + 1
+            
+            'copying over formulas
+            Workbooks("List-OnlineClass").Worksheets("log").Rows(585).EntireRow.Copy Workbooks("List-OnlineClass").Worksheets("log").Rows(finalMasterRow)
+    
+            'master log values being set to daily log values
+            Workbooks("List-OnlineClass").Worksheets("log").Range("A" & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("A" & i).Value 'LastName
+            Workbooks("List-OnlineClass").Worksheets("log").Range("B" & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("B" & i).Value 'FirstName
+            Workbooks("List-OnlineClass").Worksheets("log").Range("C" & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("H" & i).Value 'County
+            Workbooks("List-OnlineClass").Worksheets("log").Range("G" & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("G" & i).Value 'City
+            Workbooks("List-OnlineClass").Worksheets("log").Range("F" & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("J" & i).Value 'Zip Code
+            Workbooks("List-OnlineClass").Worksheets("log").Range("H" & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("E" & i).Value 'Address
+            Workbooks("List-OnlineClass").Worksheets("log").Range("D" & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("C" & i).Value 'Email
+            Workbooks("List-OnlineClass").Worksheets("log").Range("I" & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("D" & i).Value 'Phone
+            
+            'Enrollment Date, convert 2023-05-03 16:11:31.307000-05:00 to 05/03/2023
+            Dim enrollDay As String
+            
+            Dim temp As String
+            temp = Workbooks(dailyFileName).Worksheets(1).Range("M" & i).Value
+            
+            enrollDay = Mid(temp, 6, 2) & "/" & Mid(temp, 9, 2) & "/" & Left(temp, 4)
+            
+            Workbooks("List-OnlineClass").Worksheets("log").Range("E" & finalMasterRow).Value = enrollDay
+            
+            'Check if they passed, if they did add date they did to master log
+            If Workbooks(dailyFileName).Worksheets(1).Range("R" & i).Value <> "" Then
+            
+                temporary = Workbooks(dailyFileName).Worksheets(1).Range("R" & i).Value
+                
+                testPassDate = Mid(temporary, 6, 2) & "/" & Mid(temporary, 9, 2) & "/" & Left(temporary, 4)
+                
+                Workbooks("List-OnlineClass").Worksheets("log").Range("AB" & finalMasterRow).Value = testPassDate
+            End If
+            
+            finalMasterRow = finalMasterRow + 1
+        Else
+            'check if any of their data changed
+            'MAY NOT BE USED, IF USED UPDATE TO ACCCOUNT CHANGE IN COLUMNS
+            'If Workbooks("List-OnlineClass").Worksheets(2).Range("A" & finalMasterRow).Value <> Workbooks(dailyFileName).Worksheets(1).Range("A" & i).Value And LCase(Workbooks(dailyFileName).Worksheets(1).Range("A" & i).Value) <> "not set" Then
+                'Workbooks("List-OnlineClass").Worksheets(2).Range("A" & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("A" & i).Value
+            'End If
+            
+            'If Workbooks("List-OnlineClass").Worksheets(2).Range("B" & finalMasterRow).Value <> Workbooks(dailyFileName).Worksheets(1).Range("B" & i).Value And LCase(Workbooks(dailyFileName).Worksheets(1).Range("B" & i).Value) <> "not set" Then
+                'Workbooks("List-OnlineClass").Worksheets(2).Range("B" & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("B" & i).Value
+            'End If
+            
+            'If Workbooks("List-OnlineClass").Worksheets(2).Range("C" & finalMasterRow).Value <> Workbooks(dailyFileName).Worksheets(1).Range("D" & i).Value And LCase(Workbooks(dailyFileName).Worksheets(1).Range("D" & i).Value) <> "not set" Then
+                'Workbooks("List-OnlineClass").Worksheets(2).Range("C" & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("D" & i).Value
+            'End If
+            
+            'If Workbooks("List-OnlineClass").Worksheets(2).Range("D" & finalMasterRow).Value <> Workbooks(dailyFileName).Worksheets(1).Range("C" & i).Value And LCase(Workbooks(dailyFileName).Worksheets(1).Range("C" & i).Value) <> "not set" Then
+                'Workbooks("List-OnlineClass").Worksheets(2).Range("D" & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("C" & i).Value
+            'End If
+            '------------------------------------------
+            'Check if they passed, if they did add date they did to master log
+            If Workbooks(dailyFileName).Worksheets(1).Range("R" & i).Value <> "" Then
+                passes = passes + 1
+                temporary = Workbooks(dailyFileName).Worksheets(1).Range("R" & i).Value
+                
+                testPassDate = Mid(temporary, 6, 2) & "/" & Mid(temporary, 9, 2) & "/" & Left(temporary, 4)
+                
+                'find what row theyre in
+                Dim h
+                h = 2
+                Do While h < finalMasterRow
+                    If currDailyName = (LCase(Workbooks("List-OnlineClass").Worksheets("log").Range("A" & h).Value) & LCase(Workbooks("List-OnlineClass").Worksheets("log").Range("B" & h).Value)) Then
+                        Exit Do
+                    End If
+                    h = h + 1
+                Loop
+                
+                Workbooks("List-OnlineClass").Worksheets("log").Range("AB" & h).Value = testPassDate
+            End If
+        End If
+    Next
+    
+    If newEnrollments = 0 Then
+    'if no new enrollments today
+        Workbooks(dailyFileName).Close 'closing daily file
+        Application.Wait (Now + TimeValue("0:00:01"))
+        MsgBox "No New Enrollments Today", vbOKOnly + vbInformation, "Update Of Master Log Complete"
+        
+    Else
+    'Show new enrollment and let user know update of master log is complete Update Of Master Log Complete
+        Workbooks(dailyFileName).Close
+        Application.Wait (Now + TimeValue("0:00:01"))
+        MsgBox newEnrollments & " New Enrollments Today!", vbOKOnly + vbInformation, "Update Of Master Log Complete"
+    End If
+    
+    If passes = 0 Then
+        MsgBox "No New Passes Today!", vbOKOnly + vbInformation, "Update"
+    Else
+        MsgBox passes & " New Passes Today!", vbOKOnly + vbInformation, "Update"
+    End If
+    
+    Workbooks("List-OnlineClass").Worksheets("Menu").Range("A23").Value = Date
+    
+    Workbooks("List-OnlineClass").Save
+    
+End Sub
+    
+'allowing for mass update for multiple previous days missed, looks at the last time the file was update and looks at all files with dates in between then and now
+Sub autoBulkUpdate()
+    lastRow "List-OnlineClass", "log"
+    
+    Dim dailyFound As Boolean
+    dailyFound = False
+    
+    getNames
+    
+    Dim newEnrollments As Integer
+    Dim passes As Integer
+    Dim fileCount As Integer
+    
+    Dim systemDate As String
+    systemDate = Date
+    'generate date in file name
+    
+    'if generated date from file is new relative to last update, use that file
+    'Note: using right function to start from right and get date, +5 to acccount for .xlsx/.xlsm
+    'Note: standard daily file name format as follows; baen_daily_enrollment_report_2023-06-16.xlsm
+    Dim file As String
+    Dim fileMonth As String
+    Dim fileDay As String
+    Dim fileYear As String
+    
+    'Helpful https://stackoverflow.com/questions/10380312/loop-through-files-in-a-folder-using-vba
+    folderPath = ThisWorkbook.Path + "\"
+    file = Dir(folderPath)
+    Do While Len(file) > 0
+        If InStr(file, "baen") = 0 Then
+            GoTo NextIteration
+        End If
+        
+        fileMonth = Left(Right(file, 10), 2)
+        fileDay = Left(Right(file, 7), 2)
+        fileYear = Left(Right(file, 15), 4)
+        
+        Dim fileDate
+        fileDate = fileMonth & "/" & fileDay & "/" & fileYear
+        
+        'update master log with new data here, then iterate to next
+        If (fileDate >= Workbooks("List-OnlineClass").Worksheets(1).Range("A23").Value) Then
+            dailyFound = True
+            dailyFileName = file
+            fileCount = fileCount + 1
+            
+            'now here is where names from daily sheet are compared to master sheet and if new, added
+            lastRow dailyFileName, 1
+            Dim currDailyName As String
+            Dim i As Integer
+            For i = 2 To finalDailyRow
+                Dim testPassDate As String
+                Dim temporary As String
+                currDailyName = LCase(Workbooks(dailyFileName).Worksheets(1).Range("A" & i).Value) + LCase(Workbooks(dailyFileName).Worksheets(1).Range("B" & i).Value)
+                If InStr(masterSheetNames, currDailyName) = 0 Then 'if not in list then add to it
+                    
+                    masterSheetNames = masterSheetNames + currDailyName
+                    
+                    newEnrollments = newEnrollments + 1
+                    
+                    'copying over formulas
+                    Workbooks("List-OnlineClass").Worksheets("log").Rows(585).EntireRow.Copy Workbooks("List-OnlineClass").Worksheets("log").Rows(finalMasterRow)
+            
+                    'master log values being set to daily log values
+                    Workbooks("List-OnlineClass").Worksheets("log").Range("A" & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("A" & i).Value 'LastName
+                    Workbooks("List-OnlineClass").Worksheets("log").Range("B" & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("B" & i).Value 'FirstName
+                    Workbooks("List-OnlineClass").Worksheets("log").Range("C" & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("H" & i).Value 'County
+                    Workbooks("List-OnlineClass").Worksheets("log").Range("G" & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("G" & i).Value 'City
+                    Workbooks("List-OnlineClass").Worksheets("log").Range("F" & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("J" & i).Value 'Zip Code
+                    Workbooks("List-OnlineClass").Worksheets("log").Range("H" & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("E" & i).Value 'Address
+                    Workbooks("List-OnlineClass").Worksheets("log").Range("D" & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("C" & i).Value 'Email
+                    Workbooks("List-OnlineClass").Worksheets("log").Range("I" & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("D" & i).Value 'Phone
+                    
+                    'Enrollment Date, convert 2023-05-03 16:11:31.307000-05:00 to 05/03/2023
+                    Dim enrollDay As String
+                    
+                    Dim temp As String
+                    temp = Workbooks(dailyFileName).Worksheets(1).Range("M" & i).Value
+                    
+                    enrollDay = Mid(temp, 6, 2) & "/" & Mid(temp, 9, 2) & "/" & Left(temp, 4)
+                    
+                    Workbooks("List-OnlineClass").Worksheets("log").Range("E" & finalMasterRow).Value = enrollDay
+                    
+                    'Check if they passed, if they did add date they did to master log
+                    If Workbooks(dailyFileName).Worksheets(1).Range("R" & i).Value <> "" Then
+                    
+                        temporary = Workbooks(dailyFileName).Worksheets(1).Range("R" & i).Value
+                        
+                        testPassDate = Mid(temporary, 6, 2) & "/" & Mid(temporary, 9, 2) & "/" & Left(temporary, 4)
+                        
+                        Workbooks("List-OnlineClass").Worksheets("log").Range("AB" & finalMasterRow).Value = testPassDate
+                    End If
+                    
+                    finalMasterRow = finalMasterRow + 1
+                Else
+                    'check if any of their data changed
+                    'If Workbooks("List-OnlineClass").Worksheets(2).Range("A" & finalMasterRow).Value <> Workbooks(dailyFileName).Worksheets(1).Range("A" & i).Value And LCase(Workbooks(dailyFileName).Worksheets(1).Range("A" & i).Value) <> "not set" Then
+                        'Workbooks("List-OnlineClass").Worksheets(2).Range("A" & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("A" & i).Value
+                    'End If
+                    
+                    'If Workbooks("List-OnlineClass").Worksheets(2).Range("B" & finalMasterRow).Value <> Workbooks(dailyFileName).Worksheets(1).Range("B" & i).Value And LCase(Workbooks(dailyFileName).Worksheets(1).Range("B" & i).Value) <> "not set" Then
+                        'Workbooks("List-OnlineClass").Worksheets(2).Range("B" & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("B" & i).Value
+                    'End If
+                    
+                    'If Workbooks("List-OnlineClass").Worksheets(2).Range("C" & finalMasterRow).Value <> Workbooks(dailyFileName).Worksheets(1).Range("D" & i).Value And LCase(Workbooks(dailyFileName).Worksheets(1).Range("D" & i).Value) <> "not set" Then
+                        'Workbooks("List-OnlineClass").Worksheets(2).Range("C" & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("D" & i).Value
+                    'End If
+                    
+                    'If Workbooks("List-OnlineClass").Worksheets(2).Range("D" & finalMasterRow).Value <> Workbooks(dailyFileName).Worksheets(1).Range("C" & i).Value And LCase(Workbooks(dailyFileName).Worksheets(1).Range("C" & i).Value) <> "not set" Then
+                        'Workbooks("List-OnlineClass").Worksheets(2).Range("D" & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("C" & i).Value
+                    'End If
+                    
+                    'Check if they passed, if they did add date they did to master log
+                    If Workbooks(dailyFileName).Worksheets(1).Range("R" & i).Value <> "" Then
+                        passes = passes + 1
+                        temporary = Workbooks(dailyFileName).Worksheets(1).Range("R" & i).Value
+                        
+                        testPassDate = Mid(temporary, 6, 2) & "/" & Mid(temporary, 9, 2) & "/" & Left(temporary, 4)
+                        
+                        'find what row theyre in
+                        Dim h
+                        h = 2
+                        Do While h < finalMasterRow
+                            If currDailyName = (LCase(Workbooks("List-OnlineClass").Worksheets("log").Range("A" & h).Value) & LCase(Workbooks("List-OnlineClass").Worksheets("log").Range("B" & h).Value)) Then
+                                Exit Do
+                            End If
+                            h = h + 1
+                        Loop
+                        
+                        Workbooks("List-OnlineClass").Worksheets("log").Range("AB" & h).Value = testPassDate
+                    End If
+                    
+                End If
+            Next
+            
+            Workbooks(dailyFileName).Close 'closing daily file
+        End If
+NextIteration:
+        file = Dir
+    Loop
+    
+    'if no file match today then print "there are no daily files matching today"
+    If dailyFound = False Then
+        MsgBox "Your Master Log Is Either Up To Date Or Please Check You've Downloaded Daily Files In The Same Folder As Your Master WorkBook", vbOKOnly + vbCritical, "Daily Files Not Found"
+        Exit Sub
+    End If
+    
+    If newEnrollments = 0 Then
+    'if no new enrollments today
+        Application.Wait (Now + TimeValue("0:00:01"))
+        MsgBox "No New Enrollments Today", vbOKOnly + vbInformation, "Update Of Master Log Complete"
+        
+    Else
+    'let user know update of master log is complete Update Of Master Log Complete
+        Application.Wait (Now + TimeValue("0:00:01"))
+        MsgBox newEnrollments & " New Enrollments From Across " & fileCount & " Daily Files!", vbOKOnly + vbInformation, "Update Of Master Log Complete"
+    End If
+    
+    If passes = 0 Then
+        MsgBox "No New Passes Today!", vbOKOnly + vbInformation, "Update"
+    Else
+        MsgBox passes & " New Passes Today!", vbOKOnly + vbInformation, "Update"
+    End If
+    
+    Workbooks("List-OnlineClass").Worksheets("Menu").Range("A23").Value = Date
+    
+    Workbooks("List-OnlineClass").Save
+    
+End Sub
+    
+    
+'in the event a file from a previous day isnt uploaded the user can manually input the name and update the master sheet
+Sub manualUpdate()
+    
+    lastRow "List-OnlineClass", "log"
+    
+    getNames
+
+    folderPath = ThisWorkbook.Path + "\"
+
+    dailyFileName = InputBox("Please Copy And Paste The Daily File You'd Like To Use To Update The Master Sheet", "Manual Update")
+    
+    Dim dailyFound As Boolean
+    dailyFound = False
+
+    'checking if file is in folder
+    Dim file As String
+    file = Dir(folderPath)
+    Do While Len(file) > 0
+        If file = dailyFileName & ".xlsm" Then 'if found move on
+            dailyFound = True
+            Exit Do
+        End If
+        
+        file = Dir
+    Loop
+    
+    If dailyFound = False Then 'if not found end
+        MsgBox "Please Check You've Downloaded Today's Daily File In The Same Folder As Your Master WorkBook And That You Correctly Inputted The File Name", vbOKOnly + vbCritical, "Daily File Not Found"
+        Exit Sub
+    End If
+    
+    lastRow dailyFileName, 1
+    
+    Dim newEnrollments As Integer
+    Dim passes As Integer
+    
+    'now here is where names from daily sheet are compared to master sheet and if new, added
+    Dim currDailyName As String
+    
+    Dim i As Integer
+    For i = 2 To finalDailyRow
+        Dim testPassDate As String
+        Dim temporary As String
+        currDailyName = LCase(Workbooks(dailyFileName).Worksheets(1).Range("A" & i).Value) + LCase(Workbooks(dailyFileName).Worksheets(1).Range("B" & i).Value)
+        If InStr(masterSheetNames, currDailyName) = 0 Then 'if not in list then add it to the master list
+            
+            masterSheetNames = masterSheetNames + currDailyName
+            
+            newEnrollments = newEnrollments + 1
+            
+            'copying over formulas
+            Workbooks("List-OnlineClass").Worksheets("log").Rows(585).EntireRow.Copy Workbooks("List-OnlineClass").Worksheets("log").Rows(finalMasterRow)
+    
+            'master log values being set to daily log values
+            Workbooks("List-OnlineClass").Worksheets("log").Range("A" & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("A" & i).Value 'LastName
+            Workbooks("List-OnlineClass").Worksheets("log").Range("B" & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("B" & i).Value 'FirstName
+            Workbooks("List-OnlineClass").Worksheets("log").Range("C" & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("H" & i).Value 'County
+            Workbooks("List-OnlineClass").Worksheets("log").Range("G" & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("G" & i).Value 'City
+            Workbooks("List-OnlineClass").Worksheets("log").Range("F" & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("J" & i).Value 'Zip Code
+            Workbooks("List-OnlineClass").Worksheets("log").Range("H" & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("E" & i).Value 'Address
+            Workbooks("List-OnlineClass").Worksheets("log").Range("D" & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("C" & i).Value 'Email
+            Workbooks("List-OnlineClass").Worksheets("log").Range("I" & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("D" & i).Value 'Phone
+            
+            'Enrollment Date, convert 2023-05-03 16:11:31.307000-05:00 to 05/03/2023
+            Dim enrollDay As String
+            
+            Dim temp As String
+            temp = Workbooks(dailyFileName).Worksheets(1).Range("M" & i).Value
+            
+            enrollDay = Mid(temp, 6, 2) & "/" & Mid(temp, 9, 2) & "/" & Left(temp, 4)
+            
+            Workbooks("List-OnlineClass").Worksheets("log").Range("E" & finalMasterRow).Value = enrollDay
+            
+            'Check if they passed, if they did add date they did to master log
+            If Workbooks(dailyFileName).Worksheets(1).Range("R" & i).Value <> "" Then
+            
+                temporary = Workbooks(dailyFileName).Worksheets(1).Range("R" & i).Value
+                
+                testPassDate = Mid(temporary, 6, 2) & "/" & Mid(temporary, 9, 2) & "/" & Left(temporary, 4)
+                
+                Workbooks("List-OnlineClass").Worksheets("log").Range("AB" & finalMasterRow).Value = testPassDate
+            End If
+            
+            finalMasterRow = finalMasterRow + 1
+        Else
+            'Check if any of their data changed
+            'If Workbooks("List-OnlineClass").Worksheets(2).Range("A" & finalMasterRow).Value <> Workbooks(dailyFileName).Worksheets(1).Range("A" & i).Value And LCase(Workbooks(dailyFileName).Worksheets(1).Range("A" & i).Value) <> "not set" Then
+                'Workbooks("List-OnlineClass").Worksheets(2).Range("A" & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("A" & i).Value
+            'End If
+            
+            'If Workbooks("List-OnlineClass").Worksheets(2).Range("B" & finalMasterRow).Value <> Workbooks(dailyFileName).Worksheets(1).Range("B" & i).Value And LCase(Workbooks(dailyFileName).Worksheets(1).Range("B" & i).Value) <> "not set" Then
+                'Workbooks("List-OnlineClass").Worksheets(2).Range("B" & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("B" & i).Value
+            'End If
+            
+            'If Workbooks("List-OnlineClass").Worksheets(2).Range("C" & finalMasterRow).Value <> Workbooks(dailyFileName).Worksheets(1).Range("D" & i).Value And LCase(Workbooks(dailyFileName).Worksheets(1).Range("D" & i).Value) <> "not set" Then
+                'Workbooks("List-OnlineClass").Worksheets(2).Range("C" & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("D" & i).Value
+            'End If
+            
+            'If Workbooks("List-OnlineClass").Worksheets(2).Range("D" & finalMasterRow).Value <> Workbooks(dailyFileName).Worksheets(1).Range("C" & i).Value And LCase(Workbooks(dailyFileName).Worksheets(1).Range("C" & i).Value) <> "not set" Then
+                'Workbooks("List-OnlineClass").Worksheets(2).Range("D" & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("C" & i).Value
+            'End If
+            
+            'Check if they passed, if they did add date they did to master log
+            If Workbooks(dailyFileName).Worksheets(1).Range("R" & i).Value <> "" Then
+                passes = passes + 1
+                temporary = Workbooks(dailyFileName).Worksheets(1).Range("R" & i).Value
+                
+                testPassDate = Mid(temporary, 6, 2) & "/" & Mid(temporary, 9, 2) & "/" & Left(temporary, 4)
+                
+                'find what row theyre in
+                Dim h
+                h = 2
+                Do While h < finalMasterRow
+                    If currDailyName = (LCase(Workbooks("List-OnlineClass").Worksheets("log").Range("A" & h).Value) & LCase(Workbooks("List-OnlineClass").Worksheets("log").Range("B" & h).Value)) Then
+                        Exit Do
+                    End If
+                    h = h + 1
+                Loop
+                
+                Workbooks("List-OnlineClass").Worksheets("log").Range("AB" & h).Value = testPassDate
+            End If
+        End If
+    Next
+    
+    If newEnrollments = 0 Then
+    'if no new enrollments today
+        Workbooks(dailyFileName).Close
+        Application.Wait (Now + TimeValue("0:00:01"))
+        MsgBox "No New Enrollments Today", vbOKOnly + vbInformation, "Update Of Master Log Complete"
+    Else
+    'Show new enrollment and let user know update of master log is complete Update Of Master Log Complete
+        Workbooks(dailyFileName).Close
+        Application.Wait (Now + TimeValue("0:00:01"))
+        MsgBox newEnrollments & " New Enrollments Today!", vbOKOnly + vbInformation, "Update Of Master Log Complete"
+    End If
+    
+    If passes = 0 Then
+        MsgBox "No New Passes Today!", vbOKOnly + vbInformation, "Update"
+    Else
+        MsgBox passes & " New Passes Today!", vbOKOnly + vbInformation, "Update"
+    End If
+    
+    Workbooks("List-OnlineClass").Worksheets("Menu").Range("A23").Value = Date
+    
+    Workbooks("List-OnlineClass").Save
+    
+End Sub
+
+Sub testFunc()
+    
+    'working Workbooks.Open ("C:\Homeowner Class Automation\baen_daily_enrollment_report_2023-06-23")
+    
+    'workBookPath = Workbooks("List-OnlineClass").FullName
+    'folderPath = Left(workBookPath, Len(workBookPath) - Len("List-OnlineClass"))
+    
+    'Debug.Print Workbooks("List-OnlineClass.xlsm").FullName
+    'Debug.Print ThisWorkbook.path + "\"
+    
+    'Dim pathZ As String
+    'pathZ = ThisWorkbook.path + "\"
+    'Debug.Print pathZ
+    
+    'Dim nameZ As String
+    'nameZ = ThisWorkbook.name
+    'Debug.Print nameZ
+    
+    'Debug.Print pathZ + nameZ
+    
+    'Workbooks.Open (folderPath + "baen_daily_enrollment_report_2023-06-23")
+     
+     'Debug.Print InStr("heyjyk", "l")
+     
+     'Dim current
+     'current = Now
+     
+     'Debug.Print current
+     'Application.Wait (Now + TimeValue("0:00:05"))
+     'Debug.Print Now
+     
+     'Debug.Print current < Now
+     
+     'Debug.Print "6/31/2023" < "7/03/2023"
+     
+     'Debug.Print Date
+     
+     'Workbooks("List-OnlineClass").Worksheets("Menu").Range("A23").Value = Date
+     
+     'Debug.Print Workbooks("List-OnlineClass").Worksheets(1).Range("A23").Value
+    'Debug.Print Workbooks("List-OnlineClass").Worksheets("log").Range("A:A").Find(What:="fakee", LookIn:=xlValues).Row
+    'Debug.Print Workbooks("List-OnlineClass").Worksheets("log").Range("A1").Address
+    'Workbooks("baen_daily-month-_enrollment_report_2023-07-03").SaveAs FileFormat:=xlOpenXMLWorkbookMacroEnabled
+    'Workbooks.Open ("C:\Homeowner Class Automation\baen_daily-month-_enrollment_report_2023-07-03")
+    'Workbooks("baen_daily-month-_enrollment_report_2023-07-03").SaveAs FileFormat:=xlOpenXMLWorkbookMacroEnabled
+    
+End Sub
+'-----------------------------------------------------------------------------------------------------------------
+
+
+'AUTO EMAIL-----------------------------------------------------------------------------------------------------
+
+'TO BE IMPLEMENTED
+
+'Sub CreateMailInExcel()
+    'Dim olApp As Object
+    'Set olApp = Outlook.Application
+    'Dim Msg As Outlook.MailItem
+    'Dim outMail As Object
+    
+    ''Debug.Print (olApp.ProductCode)
+    'Set Msg = olApp.CreateItemFromTemplate(ThisWorkbook.Path + "\" + "HO to Learner (missing information)")
+    'Msg.Display
+    'Set Msg = Nothing
+    'Set olApp = Nothing
+    
+    'With outMail
+        '.To = Workbooks("List-OnlineClass").Worksheets(2).Range("D586").Value
+    'End With
+'End Sub
+'-----------------------------------------------------------------------------------------------------------------
+
+'AUTO CERTIFICATION-----------------------------------------------------------------------------------------------
+
+
+'TO BE IMPLEMENTED
+
+
+'-----------------------------------------------------------------------------------------------------------------
