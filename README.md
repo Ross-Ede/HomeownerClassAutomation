@@ -12,7 +12,7 @@
 
 #### In The Menu Set Your Zoom To 95% For The Best User Experience
 
-![Alt text](image-2.png)
+![Alt text](images\image-2.png)
 
 Button 1 - Update Master Sheet (Automatic) | Instantly seeks out daily file matching system date and uses that file to update the enrollments
 
@@ -24,7 +24,7 @@ Button 4 - Troubleshoot | This Button Will Run All Necessary Functions The Progr
 
 #### In The Log Set Your Zoom Between 50%-80% For Best User Experince
 
-![Alt text](image-1.png)
+![Alt text](images\image-1.png)
 
 Button 1 - Email | Will Automatically Generate A Missing Assignment/Information Email For The Enrollee In Which The Row The Email Button Was Clicked
 
@@ -34,7 +34,7 @@ Button 2 - Cert | Will Automatically Generate An Encrypted And Non-Encrypted Cou
 
 #### Firstly Please Ensure You've Run The Troubleshoot Button In The Program Menu
 
-![Alt text](image-3.png)
+![Alt text](images\image-3.png)
 
 #### If You're Running Into An Error While Using The Program; Please Use Ctrl + F To Type In Your Error And Hopefully You'll Find The Solution You're Looking For
 
