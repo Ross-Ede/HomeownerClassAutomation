@@ -1,9 +1,9 @@
 # HomeownerClassAutomation
 
 ### Setup
-  ## 1. Installing Python
+  # 1. Installing Python
 
-  ## 2. Ensure You Installed Python
+  # 2. Ensure You Installed Python
 
 
 ### Instructions On Use
