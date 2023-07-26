@@ -239,7 +239,7 @@ Programming and Meeting
                      
     + add a troubleshoot button that reassigns all variables values and etc.
 
-    + when adding highlight area button keep three rows above last empty row at all times 
+    + revert to default functions properly now 
 
     + check email address as well 
 
