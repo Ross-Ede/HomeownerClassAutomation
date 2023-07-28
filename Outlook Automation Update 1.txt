@@ -1,0 +1,57 @@
+Option Explicit
+
+'This function is responsible setting the folder object via the use of the folder path it's given
+Function GetFolder(ByVal FolderPath As String) As Outlook.folder
+    Dim TestFolder As Outlook.folder
+    Dim FoldersArray As Variant
+    Dim i As Integer
+        
+    On Error GoTo GetFolder_Error
+    If Left(FolderPath, 2) = "\\" Then
+        FolderPath = Right(FolderPath, Len(FolderPath) - 2)
+    End If
+    'Convert folderpath to array
+    FoldersArray = Split(FolderPath, "\")
+    Set TestFolder = Application.Session.Folders.Item(FoldersArray(0))
+    If Not TestFolder Is Nothing Then
+        For i = 1 To UBound(FoldersArray, 1)
+            Dim subFolders As Outlook.Folders
+            Set subFolders = TestFolder.Folders
+            Set TestFolder = subFolders.Item(FoldersArray(i))
+            If TestFolder Is Nothing Then
+                Set GetFolder = Nothing
+            End If
+        Next
+    End If
+    'Return the TestFolder
+    Set GetFolder = TestFolder
+    Exit Function
+        
+GetFolder_Error:
+    Set GetFolder = Nothing
+    Exit Function
+End Function
+
+Sub Final()
+    Dim parentPath
+    Dim parentName
+    Dim parentFolder
+    Dim subFolders
+    
+    'receieving and setting folder
+    parentPath = InputBox("To do so: Right Click Parent Folder > Properties > Copy And Paste Location", "Please Copy and Paste The Parent Folder Path")
+    parentName = InputBox("Please enter the parent folder's name (Case Sensitive)")
+    Set parentFolder = GetFolder(parentPath & "\" & parentName)
+    Set subFolders = parentFolder.Folders
+    
+    'iterating through sub folder's and removing date
+    Dim currFolder
+    For Each currFolder In subFolders
+        If Len(currFolder.Name) > 12 Then
+            currFolder.Name = Mid(currFolder.Name, 12) '2023-01-01 Name Name >>> Name Name
+        End If
+    Next currFolder
+    
+End Sub
+
+
