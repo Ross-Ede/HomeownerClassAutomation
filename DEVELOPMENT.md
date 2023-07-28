@@ -244,3 +244,18 @@ Programming and Meeting
     + check email address as well 
 
     + Program only uses emails and checks test names when adding enrollees no longer looks at names 
+
+## 7/27/2023
+
+- Programming
+    + Researching and implementing a framework in preparation for adding new columns to master sheet update and outlook auto renaming
+
+## 7/28/2023
+
+- Documentation
+                   
+    + Update to GitHub, optional update to excel VBA code (has comments for future reference). Update to README.md, update to DEVELOPMENT.md. New File For Outlook auto renaming program for outlook visual basic
+             
+- Programming
+
+    + outlook auto renaming complete
