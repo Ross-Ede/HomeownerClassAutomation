@@ -98,5 +98,5 @@ Button 2 - Cert | Will Automatically Generate An Encrypted And Non-Encrypted Cou
 | 02 | Email Button Does Nothing On Click | Please Ensure The Button Still Has A Macro Assigned To It. Right Click > Assign Macro > "ThisWorkbook.missingEmail ButtonRow". Please Note 'ButtonRow' Must Be Replaced With The Number Of The Row The Button Is In |
 | 03 | Cert Button Nothing On Click | Please Ensure The Button Still Has A Macro Assigned To It. Right Click > Assign Macro > "ThisWorkbook.makePDFs ButtonRow". Please Note 'ButtonRow' Must Be Replaced With The Number Of The Row The Button Is In |
 | 04 | VBA Error 13 - Type Mismatch Error | Please Ensure That The CEA and DR Emails Are Valid And Not Returning A Value Such As "#N/A" or "#VALUE" |
-
+| 05 | Macro Is Blocked/Disabled | Locate your file in the file explorer then right click and go to properties. In properties locate permissions that are preventing the macros from running. Then Press "OK". Return to the master workbook and select "enable content if prompted" |
 
