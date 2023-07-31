@@ -3,11 +3,11 @@
 ## Setup
   In Chronological Order, Follow The Steps In These Videos: https://drive.google.com/drive/folders/1kQJWiv2BLN6wb9iiSNPkrloqLCJUYcGm?usp=drive_link 
 
-  Ensure The Folder Housing Your "List-OnlineClass" File Has No Spaces
-  Ensure This Folder Has The "password_protect_pdf" Python File (.py)
-  Ensure This Folder Has The "HO to Learner (missing information)" Outlook Item Template File (.oft)
-  Ensure In Your File Directory Settings You Has File Extensions Turned Off
-  Ensure you do not save any files on onedrive/cloud
+  - Ensure The Folder Housing Your "List-OnlineClass" File Has No Spaces
+  - Ensure This Folder Has The "password_protect_pdf" Python File (.py)
+  - Ensure This Folder Has The "HO to Learner (missing information)" Outlook Item Template File (.oft)
+  - Ensure In Your File Directory Settings You Has File Extensions Turned Off
+  - Ensure you do not save any files on onedrive/cloud
 
 ## Instructions On Use
 
