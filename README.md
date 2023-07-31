@@ -7,6 +7,7 @@
   Ensure This Folder Has The "password_protect_pdf" Python File (.py)
   Ensure This Folder Has The "HO to Learner (missing information)" Outlook Item Template File (.oft)
   Ensure In Your File Directory Settings You Has File Extensions Turned Off
+  Ensure you do not save any files on onedrive/cloud
 
 ## Instructions On Use
 
