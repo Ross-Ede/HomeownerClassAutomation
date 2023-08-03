@@ -259,3 +259,15 @@ Programming and Meeting
 - Programming
 
     + outlook auto renaming complete
+
+## 7/31/2023
+
+- Helped Mr. Segura setup program on his laptop
+
+## 8/2/2023
+
+- Program now pre adds enrollee metadata to mastersheet (due for change as we havent actually recieved the daily file which will contain metadata)
+
+- presentation for 8/8/23 done
+
+- updated documentation 
