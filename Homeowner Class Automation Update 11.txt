@@ -315,8 +315,9 @@ NextIteration:
             newEnrollments = newEnrollments + 1
             
             'copying over formulas
-            Workbooks("List-OnlineClass").Worksheets("log").Rows(finalMasterRow - 1).EntireRow.Copy Workbooks("List-OnlineClass").Worksheets("log").Rows(finalMasterRow)
-    
+            Workbooks("List-OnlineClass").Worksheets("log").Rows(finalMasterRow - 1).EntireRow.Copy
+            Workbooks("List-OnlineClass").Worksheets("log").Rows(finalMasterRow).PasteSpecial Paste:=xlPasteFormulasAndNumberFormats
+
             'master log values being set to daily log values
             Workbooks("List-OnlineClass").Worksheets("log").Range(lNameCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("A" & i).Value 'LastName
             Workbooks("List-OnlineClass").Worksheets("log").Range(fNameCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("B" & i).Value 'FirstName
@@ -376,7 +377,7 @@ NextIteration:
                     h = h + 1
                 Loop
                 
-                If Workbooks("List-OnlineClass").Worksheets("log").Range(passDateCol & h).Value = "" Then
+                If Workbooks("List-OnlineClass").Worksheets("log").Range(passDateCol & h).Value = "" And Workbooks("List-OnlineClass").Worksheets("log").Range(emailCol & h).Value = currDailyEmail Then
                     passes = passes + 1
                     temporary = Workbooks(dailyFileName).Worksheets(1).Range("R" & i).Value
                     
@@ -478,7 +479,8 @@ Sub autoBulkUpdate()
                     newEnrollments = newEnrollments + 1
                     
                     'copying over formulas
-                    Workbooks("List-OnlineClass").Worksheets("log").Rows(finalMasterRow - 1).EntireRow.Copy Workbooks("List-OnlineClass").Worksheets("log").Rows(finalMasterRow)
+                    Workbooks("List-OnlineClass").Worksheets("log").Rows(finalMasterRow - 1).EntireRow.Copy
+                    Workbooks("List-OnlineClass").Worksheets("log").Rows(finalMasterRow).PasteSpecial Paste:=xlPasteFormulasAndNumberFormats
             
                     'master log values being set to daily log values
                     Workbooks("List-OnlineClass").Worksheets("log").Range(lNameCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("A" & i).Value 'LastName
@@ -536,7 +538,7 @@ Sub autoBulkUpdate()
                             h = h + 1
                         Loop
                         
-                        If Workbooks("List-OnlineClass").Worksheets("log").Range(passDateCol & h).Value = "" Then
+                        If Workbooks("List-OnlineClass").Worksheets("log").Range(passDateCol & h).Value = "" And Workbooks("List-OnlineClass").Worksheets("log").Range(emailCol & h).Value = currDailyEmail Then
                             passes = passes + 1
                             temporary = Workbooks(dailyFileName).Worksheets(1).Range("R" & i).Value
                             
@@ -639,8 +641,9 @@ Sub manualUpdate()
             newEnrollments = newEnrollments + 1
             
             'copying over formulas
-            Workbooks("List-OnlineClass").Worksheets("log").Rows(finalMasterRow - 1).EntireRow.Copy Workbooks("List-OnlineClass").Worksheets("log").Rows(finalMasterRow)
-    
+            Workbooks("List-OnlineClass").Worksheets("log").Rows(finalMasterRow - 1).EntireRow.Copy
+            Workbooks("List-OnlineClass").Worksheets("log").Rows(finalMasterRow).PasteSpecial Paste:=xlPasteFormulasAndNumberFormats
+            
             'master log values being set to daily log values
             Workbooks("List-OnlineClass").Worksheets("log").Range(lNameCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("A" & i).Value 'LastName
             Workbooks("List-OnlineClass").Worksheets("log").Range(fNameCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("B" & i).Value 'FirstName
@@ -697,7 +700,7 @@ Sub manualUpdate()
                     End If
                     h = h + 1
                 Loop
-                If Workbooks("List-OnlineClass").Worksheets("log").Range(passDateCol & h).Value = "" Then
+                If Workbooks("List-OnlineClass").Worksheets("log").Range(passDateCol & h).Value = "" And Workbooks("List-OnlineClass").Worksheets("log").Range(emailCol & h).Value = currDailyEmail Then
                     passes = passes + 1
                     temporary = Workbooks(dailyFileName).Worksheets(1).Range("R" & i).Value
                     
