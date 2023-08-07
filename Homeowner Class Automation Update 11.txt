@@ -239,19 +239,6 @@ Sub removeKeyWord()
 
 End Sub
 
-Sub removeSpaces()
-    Dim cell As Range
-    For Each cell In Workbooks("List-OnlineClass").Worksheets("log").Range(fNameCol & 2, fNameCol & finalMasterRow)
-        cell.Value = Replace(cell.Value, " ", "")
-        cell.Value = Replace(cell.Value, " ", "")
-    Next cell
-    
-    For Each cell In Workbooks("List-OnlineClass").Worksheets("log").Range(lNameCol & 2, fNameCol & finalMasterRow)
-        cell.Value = Replace(cell.Value, " ", "")
-        cell.Value = Replace(cell.Value, " ", "")
-    Next cell
-End Sub
-
 'This function along with 'autoBulkUpdate' and 'manualUpdate' open the daily file(s) and update the master log with values that are yet to be added
 'autoupdate, autoBulkupdate, and manual update share the same structure. Only difference is auto update searches for singular files
 Sub autoUpdate()
@@ -331,8 +318,8 @@ NextIteration:
             Workbooks("List-OnlineClass").Worksheets("log").Rows(finalMasterRow - 1).EntireRow.Copy Workbooks("List-OnlineClass").Worksheets("log").Rows(finalMasterRow)
     
             'master log values being set to daily log values
-            Workbooks("List-OnlineClass").Worksheets("log").Range(lNameCol & finalMasterRow).Value = Replace(Workbooks(dailyFileName).Worksheets(1).Range("A" & i).Value, " ", "")  'LastName
-            Workbooks("List-OnlineClass").Worksheets("log").Range(fNameCol & finalMasterRow).Value = Replace(Workbooks(dailyFileName).Worksheets(1).Range("B" & i).Value, " ", "") 'FirstName
+            Workbooks("List-OnlineClass").Worksheets("log").Range(lNameCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("A" & i).Value 'LastName
+            Workbooks("List-OnlineClass").Worksheets("log").Range(fNameCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("B" & i).Value 'FirstName
             Workbooks("List-OnlineClass").Worksheets("log").Range(countyCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("H" & i).Value 'County
             Workbooks("List-OnlineClass").Worksheets("log").Range(cityCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("G" & i).Value 'City
             Workbooks("List-OnlineClass").Worksheets("log").Range(zipCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("J" & i).Value 'Zip Code
@@ -493,8 +480,8 @@ Sub autoBulkUpdate()
                     Workbooks("List-OnlineClass").Worksheets("log").Rows(finalMasterRow - 1).EntireRow.Copy Workbooks("List-OnlineClass").Worksheets("log").Rows(finalMasterRow)
             
                     'master log values being set to daily log values
-            Workbooks("List-OnlineClass").Worksheets("log").Range(lNameCol & finalMasterRow).Value = Replace(Workbooks(dailyFileName).Worksheets(1).Range("A" & i).Value, " ", "")  'LastName
-            Workbooks("List-OnlineClass").Worksheets("log").Range(fNameCol & finalMasterRow).Value = Replace(Workbooks(dailyFileName).Worksheets(1).Range("B" & i).Value, " ", "") 'FirstName
+                    Workbooks("List-OnlineClass").Worksheets("log").Range(lNameCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("A" & i).Value 'LastName
+                    Workbooks("List-OnlineClass").Worksheets("log").Range(fNameCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("B" & i).Value 'FirstName
                     Workbooks("List-OnlineClass").Worksheets("log").Range(countyCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("H" & i).Value 'County
                     Workbooks("List-OnlineClass").Worksheets("log").Range(cityCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("G" & i).Value 'City
                     Workbooks("List-OnlineClass").Worksheets("log").Range(zipCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("J" & i).Value 'Zip Code
@@ -654,8 +641,8 @@ Sub manualUpdate()
             Workbooks("List-OnlineClass").Worksheets("log").Rows(finalMasterRow - 1).EntireRow.Copy Workbooks("List-OnlineClass").Worksheets("log").Rows(finalMasterRow)
     
             'master log values being set to daily log values
-            Workbooks("List-OnlineClass").Worksheets("log").Range(lNameCol & finalMasterRow).Value = Replace(Workbooks(dailyFileName).Worksheets(1).Range("A" & i).Value, " ", "")  'LastName
-            Workbooks("List-OnlineClass").Worksheets("log").Range(fNameCol & finalMasterRow).Value = Replace(Workbooks(dailyFileName).Worksheets(1).Range("B" & i).Value, " ", "") 'FirstName
+            Workbooks("List-OnlineClass").Worksheets("log").Range(lNameCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("A" & i).Value 'LastName
+            Workbooks("List-OnlineClass").Worksheets("log").Range(fNameCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("B" & i).Value 'FirstName
             Workbooks("List-OnlineClass").Worksheets("log").Range(countyCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("H" & i).Value 'County
             Workbooks("List-OnlineClass").Worksheets("log").Range(cityCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("G" & i).Value 'City
             Workbooks("List-OnlineClass").Worksheets("log").Range(zipCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("J" & i).Value 'Zip Code
@@ -797,8 +784,8 @@ Sub makePDFs(inRow As Integer)
     
     '(lastname)_(firstname).pdf column
     Dim fileName As String
-    fileName = Workbooks("List-OnlineClass").Worksheets("log").Range(lNameCol & inRow).Value & "_" & Workbooks("List-OnlineClass").Worksheets("log").Range(fNameCol & inRow).Value & ".pdf"
-    
+    fileName = Replace(Workbooks("List-OnlineClass").Worksheets("log").Range(lNameCol & inRow).Value, " ", "") & "_" & Replace(Workbooks("List-OnlineClass").Worksheets("log").Range(fNameCol & inRow).Value, " ", "") & ".pdf"
+
     'variable for path to certificate folder
     Dim fullFilePath As String
     
@@ -1023,6 +1010,8 @@ End Sub
 
 Sub testFunc()
     ActiveSheet.Range("AT606").Formula = ""
+    Replace(Workbooks(dailyFileName).Worksheets(1).Range("A" & i).Value, " ", "")  'LastName
+    Replace(Workbooks(dailyFileName).Worksheets(1).Range("B" & i).Value, " ", "") 'FirstName
 End Sub
 
 Sub revertToDefault()
@@ -1052,9 +1041,7 @@ Sub troubleshoot()
     getCols
     lastRow "List-OnlineClass", "log"
     removeKeyWord
-    removeSpaces
     MsgBox "Please Save Your File And Resume The Process You Were Doing Before You Ran Into An Error", vbOKOnly + vbInformation, "Troubleshooting Complete"
 End Sub
-
 
 
