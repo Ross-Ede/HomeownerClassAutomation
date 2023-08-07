@@ -364,10 +364,11 @@ NextIteration:
             finalMasterRow = finalMasterRow + 1
         Else
             'Check if they passed, if they did add date they did to master log
-            If Workbooks(dailyFileName).Worksheets(1).Range("R" & i).Value <> "" Then
+            If Workbooks(dailyFileName).Worksheets(1).Range("R" & i).Value <> "" And InStr(testNames, currDailyName) = 0 Then
                 'find what row theyre in
                 Dim h
                 h = 2
+                
                 Do While h < finalMasterRow
                     If currDailyName = (LCase(Workbooks("List-OnlineClass").Worksheets("log").Range(lNameCol & h).Value) & LCase(Workbooks("List-OnlineClass").Worksheets("log").Range(fNameCol & h).Value)) Then
                         Exit Do
@@ -524,7 +525,7 @@ Sub autoBulkUpdate()
                     finalMasterRow = finalMasterRow + 1
                 Else
                     'Check if they passed, if they did add date they did to master log
-                    If Workbooks(dailyFileName).Worksheets(1).Range("R" & i).Value <> "" Then
+                    If Workbooks(dailyFileName).Worksheets(1).Range("R" & i).Value <> "" And InStr(testNames, currDailyName) = 0 Then
                         'find what row theyre in
                         Dim h
                         h = 2
@@ -686,7 +687,7 @@ Sub manualUpdate()
             finalMasterRow = finalMasterRow + 1
         Else
             'Check if they passed, if they did add date they did to master log
-            If Workbooks(dailyFileName).Worksheets(1).Range("R" & i).Value <> "" Then
+            If Workbooks(dailyFileName).Worksheets(1).Range("R" & i).Value <> "" And InStr(testNames, currDailyName) = 0 Then
                 'find what row theyre in
                 Dim h
                 h = 2
@@ -1010,8 +1011,6 @@ End Sub
 
 Sub testFunc()
     ActiveSheet.Range("AT606").Formula = ""
-    Replace(Workbooks(dailyFileName).Worksheets(1).Range("A" & i).Value, " ", "")  'LastName
-    Replace(Workbooks(dailyFileName).Worksheets(1).Range("B" & i).Value, " ", "") 'FirstName
 End Sub
 
 Sub revertToDefault()
