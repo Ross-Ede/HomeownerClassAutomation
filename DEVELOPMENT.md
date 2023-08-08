@@ -271,3 +271,20 @@ Programming and Meeting
 - presentation for 8/8/23 done
 
 - updated documentation 
+
+# 8/7/2023
+
+- fixed issues related to names with spaces in them ex (Name Middle Last) 
+
+- add cea name and email to learner emails 
+
+- email to learner should have county extension website url 
+
+- CEA email should have cea name but has learner name instead 
+
+- fixed issues with pass dates incorrectly being inserted
+
+- Meeting with Dr. Bonaiti reviewing issues with program and also practicing and receiving feedback on presentation
+
+- Improved presentation
+
