@@ -288,3 +288,10 @@ Programming and Meeting
 
 - Improved presentation
 
+# 8/9/2023
+
+- Presentation meeting
+
+- Fixed template for program
+
+- Updated documentation
