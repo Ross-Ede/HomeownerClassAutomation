@@ -69,7 +69,7 @@ Button 2 - Cert | Will Automatically Generate An Encrypted And Non-Encrypted Cou
 1. Ensure Your In The "MAIN" Branch Of The HomeownerClassAutomation GitHub Repository
 
 2. Select The Most Recent/Update To Date HomeownerClass Automation.txt File (Generally At The Bottom Out Of All The Files. Can Also Be Double Checked By Checking Which File Has The Largest Update Number)
-  - At The Time Of Writing This, The Most Recent Update Is "Homeowner Class Automation Update 12.txt"
+  - At The Time Of Writing This, The Most Recent Update Is "Homeowner Class Automation Update 13.txt"
 
 ![alt text](https://github.com/Ross-Ede/HomeownerClassAutomation/blob/main/images/image-5.png?raw=true)
 

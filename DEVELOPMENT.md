@@ -295,3 +295,9 @@ Programming and Meeting
 - Fixed template for program
 
 - Updated documentation
+
+# 8/15/2023
+
+- Minor template issue resolved
+
+- updated documentation
