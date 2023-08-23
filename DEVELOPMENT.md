@@ -301,3 +301,13 @@ Programming and Meeting
 - Minor template issue resolved
 
 - updated documentation
+
+# 8/16/2023
+
+- Changed template
+
+# 8/16/2023 
+
+- Troubleshooting program issue, solution in progress
+
++ Problem: (Some new enrollees email and certification button are bound to row 626 on Dr. Bonaiti's file but not on others)
