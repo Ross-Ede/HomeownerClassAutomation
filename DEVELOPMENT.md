@@ -311,3 +311,7 @@ Programming and Meeting
 - Troubleshooting program issue, solution in progress
 
 + Problem: (Some new enrollees email and certification button are bound to row 626 on Dr. Bonaiti's file but not on others)
+
+#9/14/2023
+
+- Overlapping button issue resolved, was causing incorrect buttons to load and making file extremely large and laggy
