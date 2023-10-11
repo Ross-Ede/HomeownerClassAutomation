@@ -315,3 +315,7 @@ Programming and Meeting
 #9/14/2023
 
 - Overlapping button issue resolved, was causing incorrect buttons to load and making file extremely large and laggy
+
+# 10/10/2023
+
+- Dropdown menu was not copied over. Program was not copying over validation format, it now does.
