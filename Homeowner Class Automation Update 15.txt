@@ -1,0 +1,1134 @@
+Option Explicit
+
+'AUTO DAILY DATA COLLECTION---------------------------------------------------------------------------------------
+'Global Variables
+Dim finalMasterRow As Integer
+Dim finalDailyRow As Integer
+
+Dim masterSheetNames As String
+Dim masterSheetEmails As String
+Dim testNames As String
+
+Dim folderPath As String
+Dim dailyFileName As String
+
+Dim lNameCol As String
+Dim fNameCol As String
+Dim countyCol As String
+Dim cityCol As String
+Dim zipCol As String
+Dim addressCol As String
+Dim emailCol As String
+Dim phoneCol As String
+Dim enrollDateCol As String
+Dim passDateCol As String
+Dim certCol As String
+Dim flCol As String
+Dim ceaContactCol As String
+Dim ceaEmailCol As String
+Dim ceaEmailCCCol As String
+Dim ceaWebsite As String
+Dim drContactCol As String
+Dim ceaOfficeEmailCol As String
+Dim drEmailCol As String
+Dim missingEmailCol As String
+Dim certDateCol As String
+Dim emptyCol1 As String
+Dim emptyCol2 As String
+
+Sub getCols() ' This function is what allows for column variability/moving. All that is required that the column names rename the same
+              ' In The Event A column name needs to be changed: seek the old column name in the function below, and rename it
+              ' removing columns has no effect on the program unless it is a crucial column such as name or address etc.
+    Dim cell As Range
+    Dim f As Integer
+    f = 1
+    
+    Dim cols As String
+    cols = "ABCDEFGHIJKLMNOPQRSTUVWXYZAAABACADAEAFAGAHAIAJAKALAMANAOAPAQARASATAUAVAWAXAYAZBABBBCBDBEBFBGBHBIBJBKBLBMBNBOBPBQBRBSBTBUBVBWBXBYBZ"
+    
+    For Each cell In Workbooks("List-OnlineClass").Worksheets("log").Range("A1:BZ1")
+        If IsError(cell.Value) Then
+            GoTo continue
+        End If
+        
+        If LCase(cell.Value) = "last name" Then
+            If f > 26 Then
+                lNameCol = Mid(cols, f, 2)
+            Else
+                lNameCol = Mid(cols, f, 1)
+            End If
+        ElseIf LCase(cell.Value) = "first name" Then
+            If f > 26 Then
+                fNameCol = Mid(cols, f, 2)
+            Else
+                fNameCol = Mid(cols, f, 1)
+            End If
+        ElseIf LCase(cell.Value) = "county" Then
+            If f > 26 Then
+                countyCol = Mid(cols, f, 2)
+            Else
+                countyCol = Mid(cols, f, 1)
+            End If
+        ElseIf LCase(cell.Value) = "email" Then
+            If f > 26 Then
+                emailCol = Mid(cols, f, 2)
+            Else
+                emailCol = Mid(cols, f, 1)
+            End If
+        ElseIf LCase(cell.Value) = "date enrolled (auto report)" Then
+             If f > 26 Then
+                enrollDateCol = Mid(cols, f, 2)
+            Else
+                enrollDateCol = Mid(cols, f, 1)
+            End If
+        ElseIf LCase(cell.Value) = "zip" Then
+            If f > 26 Then
+                zipCol = Mid(cols, f, 2)
+            Else
+                zipCol = Mid(cols, f, 1)
+            End If
+        ElseIf LCase(cell.Value) = "city" Then
+            If f > 26 Then
+                cityCol = Mid(cols, f, 2)
+            Else
+                cityCol = Mid(cols, f, 1)
+            End If
+        ElseIf LCase(cell.Value) = "address" Then
+            If f > 26 Then
+                addressCol = Mid(cols, f, 2)
+            Else
+                addressCol = Mid(cols, f, 1)
+            End If
+        ElseIf LCase(cell.Value) = "phone" Then
+            If f > 26 Then
+                phoneCol = Mid(cols, f, 2)
+            Else
+                phoneCol = Mid(cols, f, 1)
+            End If
+        ElseIf LCase(cell.Value) = "date final test passed (auto email)" Then
+            If f > 26 Then
+                passDateCol = Mid(cols, f, 2)
+            Else
+                passDateCol = Mid(cols, f, 1)
+            End If
+        ElseIf LCase(cell.Value) = "certificate" Then
+            If f > 26 Then
+                certCol = Mid(cols, f, 2)
+            Else
+                certCol = Mid(cols, f, 1)
+            End If
+        ElseIf LCase(cell.Value) = "firstlast" Then
+            If f > 26 Then
+                flCol = Mid(cols, f, 2)
+            Else
+                flCol = Mid(cols, f, 1)
+            End If
+        ElseIf LCase(cell.Value) = "cea contact" Then
+            If f > 26 Then
+                ceaContactCol = Mid(cols, f, 2)
+            Else
+                ceaContactCol = Mid(cols, f, 1)
+            End If
+        ElseIf LCase(cell.Value) = "cea email" Then
+            If f > 26 Then
+                ceaEmailCol = Mid(cols, f, 2)
+            Else
+                ceaEmailCol = Mid(cols, f, 1)
+            End If
+        ElseIf LCase(cell.Value) = "cea email cc" Then
+            If f > 26 Then
+                ceaEmailCCCol = Mid(cols, f, 2)
+            Else
+                ceaEmailCCCol = Mid(cols, f, 1)
+            End If
+        ElseIf LCase(cell.Value) = "cea office email" Then
+            If f > 26 Then
+                ceaOfficeEmailCol = Mid(cols, f, 2)
+            Else
+                ceaOfficeEmailCol = Mid(cols, f, 1)
+            End If
+        ElseIf LCase(cell.Value) = "cea website" Then
+            If f > 26 Then
+                ceaWebsite = Mid(cols, f, 2)
+            Else
+                ceaWebsite = Mid(cols, f, 1)
+            End If
+        ElseIf LCase(cell.Value) = "dr contact" Then
+            If f > 26 Then
+                drContactCol = Mid(cols, f, 2)
+            Else
+                drContactCol = Mid(cols, f, 1)
+            End If
+        ElseIf LCase(cell.Value) = "dr email" Then
+            If f > 26 Then
+                drEmailCol = Mid(cols, f, 2)
+            Else
+                drEmailCol = Mid(cols, f, 1)
+            End If
+        ElseIf LCase(cell.Value) = "missing info?" Then
+            If f > 26 Then
+                missingEmailCol = Mid(cols, f, 2)
+            Else
+                missingEmailCol = Mid(cols, f, 1)
+            End If
+        ElseIf LCase(cell.Value) = "date certificate emailed to cea" Then
+            If f > 26 Then
+                certDateCol = Mid(cols, f, 2)
+            Else
+                certDateCol = Mid(cols, f, 1)
+            End If
+        ElseIf cell.Value = "" And emptyCol1 = "" Then
+            If f > 26 Then
+                emptyCol1 = Mid(cols, f, 2)
+            Else
+                emptyCol1 = Mid(cols, f, 1)
+            End If
+        ElseIf cell.Value = "" And emptyCol2 = "" Then
+            If f > 26 Then
+                If emptyCol1 <> Mid(cols, f, 2) Then
+                    emptyCol2 = Mid(cols, f, 2)
+                End If
+            Else
+                If emptyCol1 <> Mid(cols, f, 1) Then
+                    emptyCol2 = Mid(cols, f, 1)
+                End If
+            End If
+        End If
+        
+        If f > 26 Then
+            f = f + 2
+        Else
+            f = f + 1
+        End If
+continue:
+    Next cell
+End Sub
+
+Sub lastRow(book, sheet) 'this function is used to find the last row in any sheet passed into it; In this program its mainly for the master sheet and daily sheet
+    Dim last As Integer
+    Dim cell As Range
+    If book <> "List-OnlineClass" Then 'checking if daily book, if not its the main book
+        Workbooks.Open (folderPath + dailyFileName)
+        finalDailyRow = Workbooks(dailyFileName).Worksheets(sheet).Range("A:A").Find(What:="", LookIn:=xlValues).Row
+    Else
+        finalMasterRow = Workbooks("List-OnlineClass").Worksheets("log").Range(lNameCol & ":" & lNameCol).Find(What:="", LookIn:=xlValues).Row
+    End If
+End Sub
+
+'names from master sheet, and addresses (address added later in order to account for enrollments with same names)
+Sub getNames()
+    Dim x As Integer
+    masterSheetNames = ""
+    masterSheetEmails = ""
+    testNames = "calvertcaitlynshoemakerkatlinbrownbrigittemooretarahramirezmichellematzkecaseyhomeyermeganwilsoncalliedworaczykbrettolivarezvincebaggettkristinbonaitigabrielejantraniaanishgerlichryansegurajoshua "
+    lastRow "List-OnlineClass", "log" 'NOTE THIS IS HARDCODED AND IN OTHER SPOTS, FUTURE CHANGE WILL ALLOW USER TO SAVE TO ANY SHEET
+    
+    For x = 2 To finalMasterRow  'Previous Names    Current Last Name                                                         Current First Name
+        masterSheetNames = LCase(masterSheetNames & Workbooks("List-OnlineClass").Worksheets("log").Range(lNameCol & x).Value) & LCase(Workbooks("List-OnlineClass").Worksheets("log").Range(fNameCol & x).Value)
+        masterSheetEmails = LCase(masterSheetEmails & Workbooks("List-OnlineClass").Worksheets("log").Range(emailCol & x).Value)
+    Next
+End Sub
+
+'removing the word "county" from county column so Dr. Bonaiti's formula works | Deprecated function, causes to much runtime
+Sub removeKeyWord()
+    Dim cell As Range
+    For Each cell In Workbooks("List-OnlineClass").Worksheets("log").Range(countyCol & 2, countyCol & finalMasterRow)
+        cell.Value = Replace(cell.Value, " county", "")
+        cell.Value = Replace(cell.Value, " County", "")
+    Next cell
+
+End Sub
+
+'This function along with 'autoBulkUpdate' and 'manualUpdate' open the daily file(s) and update the master log with values that are yet to be added
+'autoupdate, autoBulkupdate, and manual update share the same structure. Only difference is auto update searches for singular files
+Sub autoUpdate()
+    Application.ScreenUpdating = False
+    ActiveWindow.Zoom = 100 'Set zoom at 100% to avoid positioning errors
+    
+    getCols
+    
+    lastRow "List-OnlineClass", "log"
+    
+    getNames
+    
+    Dim newEnrollments As Integer
+    Dim passes As Integer
+    
+    Dim dailyFound As Boolean
+    dailyFound = False
+    
+    Dim systemDate As String
+    systemDate = Date
+    
+    'generate date in file name
+    
+    'if generated date from file is new relative to last update, use that file
+    'Note: using right function to start from right and get date, +3 to acccount for .csv
+    'Note: standard daily file name format as follows; baen_daily_enrollment_report_2023-06-16.csv
+    Dim file As String
+    Dim fileMonth As String
+    Dim fileDay As String
+    Dim fileYear As String
+    
+    'Helpful https://stackoverflow.com/questions/10380312/loop-through-files-in-a-folder-using-vba
+    folderPath = ThisWorkbook.Path + "\"
+    file = Dir(folderPath)
+    Do While Len(file) > 0
+        If InStr(file, "baen") = 0 Then
+            GoTo NextIteration
+        End If
+        
+        fileDay = Left(Right(file, 6), 2)
+        fileMonth = Left(Right(file, 9), 2)
+        fileYear = Left(Right(file, 14), 4)
+        
+        Dim fileDate
+        fileDate = fileMonth & "/" & fileDay & "/" & fileYear
+        
+        'comparing dates to see if daily file is here today
+        If (CDate(fileDate) = CDate(systemDate)) Then
+            dailyFound = True
+            dailyFileName = file
+            Exit Do
+        End If
+NextIteration:
+        file = Dir
+    Loop
+    
+    'if no file match today then print "there are no daily files matching today"
+    If dailyFound = False Then
+        MsgBox "Please Check You've Downloaded Today's Daily File In The Same Folder As Your Master WorkBook", vbOKOnly + vbCritical, "Daily File Not Found"
+        Exit Sub
+    End If
+    
+    'now here is where names from daily sheet are compared to master sheet and if new, added
+    lastRow dailyFileName, 1
+    Dim currDailyName As String
+    Dim currDailyEmail As String
+    Dim i As Integer
+    For i = 2 To finalDailyRow - 1
+        Dim testPassDate As String
+        Dim temporary As String
+        currDailyName = LCase(Workbooks(dailyFileName).Worksheets(1).Range("A" & i).Value) + LCase(Workbooks(dailyFileName).Worksheets(1).Range("B" & i).Value)
+        currDailyEmail = LCase(Workbooks(dailyFileName).Worksheets(1).Range("C" & i).Value)
+        If InStr(masterSheetEmails, currDailyEmail) = 0 And InStr(testNames, currDailyName) = 0 Then 'if not in list then add to it, or in test name list
+            masterSheetNames = masterSheetNames + currDailyName
+            masterSheetEmails = masterSheetEmails + currDailyEmail
+            
+            newEnrollments = newEnrollments + 1
+            
+            'copying over formulas
+            Workbooks("List-OnlineClass").Worksheets("log").Rows(finalMasterRow - 1).Copy
+            Workbooks("List-OnlineClass").Worksheets("log").Rows(finalMasterRow).PasteSpecial Paste:=xlPasteFormulas, Operation:=xlNone, SkipBlanks:=False, Transpose:=False
+            Workbooks("List-OnlineClass").Worksheets("log").Rows(finalMasterRow).PasteSpecial Paste:=xlPasteFormats, Operation:=xlNone, SkipBlanks:=False, Transpose:=False
+            'Workbooks("List-OnlineClass").Worksheets("log").Rows(finalMasterRow - 1).EntireRow.Copy Workbooks("List-OnlineClass").Worksheets("log").Rows(finalMasterRow)
+            Workbooks("List-OnlineClass").Worksheets("log").Range(passDateCol & finalMasterRow).Value = ""
+            
+            'master log values being set to daily log values
+            Workbooks("List-OnlineClass").Worksheets("log").Range(lNameCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("A" & i).Value 'LastName
+            Workbooks("List-OnlineClass").Worksheets("log").Range(fNameCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("B" & i).Value 'FirstName
+            Workbooks("List-OnlineClass").Worksheets("log").Range(countyCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("H" & i).Value 'County
+            Workbooks("List-OnlineClass").Worksheets("log").Range(cityCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("G" & i).Value 'City
+            Workbooks("List-OnlineClass").Worksheets("log").Range(zipCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("J" & i).Value 'Zip Code
+            Workbooks("List-OnlineClass").Worksheets("log").Range(addressCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("E" & i).Value 'Address
+            Workbooks("List-OnlineClass").Worksheets("log").Range(emailCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("C" & i).Value 'Email
+            Workbooks("List-OnlineClass").Worksheets("log").Range(phoneCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("D" & i).Value 'Phone
+            
+            'copying over website/assignment time data/metadata
+            Workbooks("List-OnlineClass").Worksheets("log").Range("AV" & finalMasterRow & ":" & "BD" & finalMasterRow).Copy Workbooks(dailyFileName).Worksheets(1).Range("S" & i & ":" & "AD" & i)
+
+            'Enrollment Date, convert 2023-05-03 16:11:31.307000-05:00 to 05/03/2023
+            Dim enrollDay As String
+            
+            Dim temp As String
+            temp = Workbooks(dailyFileName).Worksheets(1).Range("M" & i).Value
+            
+            enrollDay = Mid(temp, 6, 2) & "/" & Mid(temp, 9, 2) & "/" & Left(temp, 4)
+            
+            Workbooks("List-OnlineClass").Worksheets("log").Range(enrollDateCol & finalMasterRow).Value = enrollDay
+            
+            'Check if they passed, if they did add date they did to master log
+            If Workbooks(dailyFileName).Worksheets(1).Range("R" & i).Value <> "" Then
+                passes = passes + 1
+            
+                temporary = Workbooks(dailyFileName).Worksheets(1).Range("R" & i).Value
+                
+                testPassDate = Mid(temporary, 6, 2) & "/" & Mid(temporary, 9, 2) & "/" & Left(temporary, 4)
+                
+                Workbooks("List-OnlineClass").Worksheets("log").Range(passDateCol & finalMasterRow).Value = testPassDate
+            End If
+
+            'removing county keyword so formulas work
+            Workbooks("List-OnlineClass").Worksheets("log").Range(countyCol & finalMasterRow).Value = Replace(Workbooks("List-OnlineClass").Worksheets("log").Range(countyCol & finalMasterRow).Value, " county", "")
+            Workbooks("List-OnlineClass").Worksheets("log").Range(countyCol & finalMasterRow).Value = Replace(Workbooks("List-OnlineClass").Worksheets("log").Range(countyCol & finalMasterRow).Value, " County", "")
+            
+'            insertEmailButton Workbooks("List-OnlineClass").Worksheets("log").Range(missingEmailCol & finalMasterRow)
+'            insertCertButton Workbooks("List-OnlineClass").Worksheets("log").Range(certCol & finalMasterRow)
+            
+            insertEmailButton Workbooks("List-OnlineClass").Worksheets("log").Cells(finalMasterRow, missingEmailCol)
+            insertCertButton Workbooks("List-OnlineClass").Worksheets("log").Cells(finalMasterRow, certCol)
+            
+            finalMasterRow = finalMasterRow + 1
+        Else
+            'Check if they passed, if they did add date they did to master log
+            If Workbooks(dailyFileName).Worksheets(1).Range("R" & i).Value <> "" And InStr(testNames, currDailyName) = 0 Then
+                'find what row theyre in
+                Dim h
+                h = 2
+                
+                Do While h < finalMasterRow
+                    If currDailyName = (LCase(Workbooks("List-OnlineClass").Worksheets("log").Range(lNameCol & h).Value) & LCase(Workbooks("List-OnlineClass").Worksheets("log").Range(fNameCol & h).Value)) Then
+                        Exit Do
+                    End If
+                    h = h + 1
+                Loop
+                
+                If Workbooks("List-OnlineClass").Worksheets("log").Range(passDateCol & h).Value = "" And Workbooks("List-OnlineClass").Worksheets("log").Range(emailCol & h).Value = currDailyEmail Then
+                    passes = passes + 1
+                    temporary = Workbooks(dailyFileName).Worksheets(1).Range("R" & i).Value
+                    
+                    testPassDate = Mid(temporary, 6, 2) & "/" & Mid(temporary, 9, 2) & "/" & Left(temporary, 4)
+                    
+                    Workbooks("List-OnlineClass").Worksheets("log").Range(passDateCol & h).Value = testPassDate
+                End If
+            End If
+        End If
+    Next
+    
+    If newEnrollments = 0 Then
+    'if no new enrollments today
+        Workbooks(dailyFileName).Close savechanges:=False, fileName:=dailyFileName 'closing daily file
+        Application.Wait (Now + TimeValue("0:00:01"))
+        MsgBox "No New Enrollments Today", vbOKOnly + vbInformation, "Update Of Master Log Complete"
+        
+    Else
+    'Show new enrollment and let user know update of master log is complete Update Of Master Log Complete
+        Workbooks(dailyFileName).Close savechanges:=False, fileName:=dailyFileName
+        Application.Wait (Now + TimeValue("0:00:01"))
+        MsgBox newEnrollments & " New Enrollments Today!", vbOKOnly + vbInformation, "Update Of Master Log Complete"
+    End If
+    
+    If passes = 0 Then
+        MsgBox "No New Passes Today!", vbOKOnly + vbInformation, "Update"
+    Else
+        MsgBox passes & " New Passes Today!", vbOKOnly + vbInformation, "Update"
+    End If
+    
+    Workbooks("List-OnlineClass").Worksheets("Menu").Range("A23").Value = Date
+    
+    Dim l
+    For l = finalMasterRow - newEnrollments To finalMasterRow - 1
+        insertEmailButton Workbooks("List-OnlineClass").Worksheets("log").Range(missingEmailCol & l)
+        insertCertButton Workbooks("List-OnlineClass").Worksheets("log").Range(certCol & l)
+    Next
+    
+    ActiveWindow.Zoom = 65 'Restore previous zoom
+    Workbooks("List-OnlineClass").Worksheets("Menu").Activate
+    Application.ScreenUpdating = True
+    
+    'making menu reappear
+    ActiveWindow.ScrollRow = 1
+    ActiveWindow.ScrollRow = 2
+    ActiveWindow.ScrollRow = 3
+    ActiveWindow.ScrollRow = 2
+    ActiveWindow.ScrollRow = 1
+    
+    Workbooks("List-OnlineClass").Save
+
+End Sub
+    
+'allowing for mass update for multiple previous days missed, looks at the last time the file was update and looks at all files with dates in between then and now
+Sub autoBulkUpdate()
+    Application.ScreenUpdating = False
+    ActiveWindow.Zoom = 100 'Set zoom at 100% to avoid positioning errors
+    
+    getCols
+
+    lastRow "List-OnlineClass", "log"
+    
+    Dim dailyFound As Boolean
+    dailyFound = False
+    
+    getNames
+    
+    Dim newEnrollments As Integer
+    Dim passes As Integer
+    Dim fileCount As Integer
+    
+    Dim systemDate As String
+    systemDate = Date
+    'generate date in file name
+    
+    'if generated date from file is new relative to last update, use that file
+    'Note: using right function to start from right and get date, +3 to acccount for .csv
+    'Note: standard daily file name format as follows; baen_daily_enrollment_report_2023-06-16.csv
+    Dim file As String
+    Dim fileMonth As String
+    Dim fileDay As String
+    Dim fileYear As String
+    
+    'Helpful https://stackoverflow.com/questions/10380312/loop-through-files-in-a-folder-using-vba
+    folderPath = ThisWorkbook.Path + "\"
+    file = Dir(folderPath)
+    Do While Len(file) > 0
+        If InStr(file, "baen") = 0 Then
+            GoTo NextIteration
+        End If
+        
+        fileDay = Left(Right(file, 6), 2)
+        fileMonth = Left(Right(file, 9), 2)
+        fileYear = Left(Right(file, 14), 4)
+        
+        Dim fileDate
+        fileDate = fileMonth & "/" & fileDay & "/" & fileYear
+        
+        'update master log with new data here, then iterate to next
+        If (CDate(fileDate) >= CDate(Workbooks("List-OnlineClass").Worksheets("Menu").Range("A23").Value)) Then
+            dailyFound = True
+            dailyFileName = file
+            fileCount = fileCount + 1
+            
+            'now here is where names from daily sheet are compared to master sheet and if new, added
+            lastRow dailyFileName, 1
+            Dim currDailyName As String
+            Dim currDailyEmail As String
+            Dim i As Integer
+            For i = 2 To finalDailyRow - 1
+                Dim testPassDate As String
+                Dim temporary As String
+                currDailyName = LCase(Workbooks(dailyFileName).Worksheets(1).Range("A" & i).Value) + LCase(Workbooks(dailyFileName).Worksheets(1).Range("B" & i).Value)
+                currDailyEmail = LCase(Workbooks(dailyFileName).Worksheets(1).Range("C" & i).Value)
+                If InStr(masterSheetEmails, currDailyEmail) = 0 And InStr(testNames, currDailyName) = 0 Then 'InStr(masterSheetEmails, currDailyEmail) = 0 Or InStr(masterSheetNames, currDailyName) = 0 And InStr(testNames, currDailyName) = 0 Then 'if not in list then add to it
+                    masterSheetEmails = masterSheetEmails + currDailyEmail
+                    masterSheetNames = masterSheetNames + currDailyName
+                    
+                    newEnrollments = newEnrollments + 1
+
+                    Workbooks("List-OnlineClass").Worksheets("log").Rows(finalMasterRow - 1).Copy
+                    Workbooks("List-OnlineClass").Worksheets("log").Rows(finalMasterRow).PasteSpecial Paste:=xlPasteFormulas, Operation:=xlNone, SkipBlanks:=False, Transpose:=False
+                    Workbooks("List-OnlineClass").Worksheets("log").Rows(finalMasterRow).PasteSpecial Paste:=xlPasteFormats, Operation:=xlNone, SkipBlanks:=False, Transpose:=False
+                    'Workbooks("List-OnlineClass").Worksheets("log").Rows(finalMasterRow - 1).EntireRow.Copy Workbooks("List-OnlineClass").Worksheets("log").Rows(finalMasterRow)
+                    Workbooks("List-OnlineClass").Worksheets("log").Range(passDateCol & finalMasterRow).Value = ""
+            
+                    'master log values being set to daily log values
+                    Workbooks("List-OnlineClass").Worksheets("log").Range(lNameCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("A" & i).Value 'LastName
+                    Workbooks("List-OnlineClass").Worksheets("log").Range(fNameCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("B" & i).Value 'FirstName
+                    Workbooks("List-OnlineClass").Worksheets("log").Range(countyCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("H" & i).Value 'County
+                    Workbooks("List-OnlineClass").Worksheets("log").Range(cityCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("G" & i).Value 'City
+                    Workbooks("List-OnlineClass").Worksheets("log").Range(zipCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("J" & i).Value 'Zip Code
+                    Workbooks("List-OnlineClass").Worksheets("log").Range(addressCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("E" & i).Value 'Address
+                    Workbooks("List-OnlineClass").Worksheets("log").Range(emailCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("C" & i).Value 'Email
+                    Workbooks("List-OnlineClass").Worksheets("log").Range(phoneCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("D" & i).Value 'Phone
+                    
+                    'copying over website/assignment time data/metadata
+                    Workbooks("List-OnlineClass").Worksheets("log").Range("AV" & finalMasterRow & ":" & "BD" & finalMasterRow).Copy Workbooks(dailyFileName).Worksheets(1).Range("S" & i & ":" & "AD" & i)
+                   
+                    
+                    'Enrollment Date, convert 2023-05-03 16:11:31.307000-05:00 to 05/03/2023
+                    Dim enrollDay As String
+                    
+                    Dim temp As String
+                    temp = Workbooks(dailyFileName).Worksheets(1).Range("M" & i).Value
+                    
+                    enrollDay = Mid(temp, 6, 2) & "/" & Mid(temp, 9, 2) & "/" & Left(temp, 4)
+                    
+                    Workbooks("List-OnlineClass").Worksheets("log").Range(enrollDateCol & finalMasterRow).Value = enrollDay
+                    
+                    'Check if they passed, if they did add date they did to master log
+                    If Workbooks(dailyFileName).Worksheets(1).Range("R" & i).Value <> "" Then
+                        passes = passes + 1
+                    
+                        temporary = Workbooks(dailyFileName).Worksheets(1).Range("R" & i).Value
+                        
+                        testPassDate = Mid(temporary, 6, 2) & "/" & Mid(temporary, 9, 2) & "/" & Left(temporary, 4)
+                        
+                        Workbooks("List-OnlineClass").Worksheets("log").Range(passDateCol & finalMasterRow).Value = testPassDate
+                    End If
+                    
+                    'removing county keyword so formulas work
+                    Workbooks("List-OnlineClass").Worksheets("log").Range(countyCol & finalMasterRow).Value = Replace(Workbooks("List-OnlineClass").Worksheets("log").Range(countyCol & finalMasterRow).Value, " county", "")
+                    Workbooks("List-OnlineClass").Worksheets("log").Range(countyCol & finalMasterRow).Value = Replace(Workbooks("List-OnlineClass").Worksheets("log").Range(countyCol & finalMasterRow).Value, " County", "")
+                                
+'                    insertEmailButton Workbooks("List-OnlineClass").Worksheets("log").Range(missingEmailCol & finalMasterRow)
+'                    insertCertButton Workbooks("List-OnlineClass").Worksheets("log").Range(certCol & finalMasterRow)
+                                                            
+                    finalMasterRow = finalMasterRow + 1
+                Else
+                    'Check if they passed, if they did add date they did to master log
+                    If Workbooks(dailyFileName).Worksheets(1).Range("R" & i).Value <> "" And InStr(testNames, currDailyName) = 0 Then
+                        'find what row theyre in
+                        Dim h
+                        h = 2
+                        Do While h < finalMasterRow
+                            If currDailyName = (LCase(Workbooks("List-OnlineClass").Worksheets("log").Range(lNameCol & h).Value) & LCase(Workbooks("List-OnlineClass").Worksheets("log").Range(fNameCol & h).Value)) Then
+                                Exit Do
+                            End If
+                            h = h + 1
+                        Loop
+                        
+                        If Workbooks("List-OnlineClass").Worksheets("log").Range(passDateCol & h).Value = "" And Workbooks("List-OnlineClass").Worksheets("log").Range(emailCol & h).Value = currDailyEmail Then
+                            passes = passes + 1
+                            temporary = Workbooks(dailyFileName).Worksheets(1).Range("R" & i).Value
+                            
+                            testPassDate = Mid(temporary, 6, 2) & "/" & Mid(temporary, 9, 2) & "/" & Left(temporary, 4)
+                                                        
+                            Workbooks("List-OnlineClass").Worksheets("log").Range(passDateCol & h).Value = testPassDate
+                        End If
+                    End If
+                    
+                End If
+            Next
+            
+            Workbooks(dailyFileName).Close savechanges:=False, fileName:=dailyFileName 'closing daily file
+        End If
+NextIteration:
+        file = Dir
+    Loop
+    
+    'if no file match today then print "there are no daily files matching today"
+    If dailyFound = False Then
+        MsgBox "Your Master Log Is Either Up To Date Or Please Check You've Downloaded Daily Files In The Same Folder As Your Master WorkBook", vbOKOnly + vbCritical, "Daily Files Not Found"
+        Exit Sub
+    End If
+    
+    If newEnrollments = 0 Then
+    'if no new enrollments today
+        Application.Wait (Now + TimeValue("0:00:01"))
+        MsgBox "No New Enrollments Today", vbOKOnly + vbInformation, "Update Of Master Log Complete"
+        
+    Else
+    'let user know update of master log is complete Update Of Master Log Complete
+        Application.Wait (Now + TimeValue("0:00:01"))
+        MsgBox newEnrollments & " New Enrollments From Across " & fileCount & " Daily Files!", vbOKOnly + vbInformation, "Update Of Master Log Complete"
+    End If
+    
+    If passes = 0 Then
+        MsgBox "No New Passes Today!", vbOKOnly + vbInformation, "Update"
+    Else
+        MsgBox passes & " New Passes Today!", vbOKOnly + vbInformation, "Update"
+    End If
+    
+    Workbooks("List-OnlineClass").Worksheets("Menu").Range("A23").Value = Date
+    
+    Dim l
+    For l = finalMasterRow - newEnrollments To finalMasterRow - 1
+        insertEmailButton Workbooks("List-OnlineClass").Worksheets("log").Range(missingEmailCol & l)
+        insertCertButton Workbooks("List-OnlineClass").Worksheets("log").Range(certCol & l)
+    Next
+    
+    ActiveWindow.Zoom = 65 'Restore previous zoom
+    Workbooks("List-OnlineClass").Worksheets("Menu").Activate
+    Application.ScreenUpdating = True
+    
+    'making menu reappear
+    ActiveWindow.ScrollRow = 1
+    ActiveWindow.ScrollRow = 2
+    ActiveWindow.ScrollRow = 3
+    ActiveWindow.ScrollRow = 2
+    ActiveWindow.ScrollRow = 1
+    
+    Workbooks("List-OnlineClass").Save
+    
+End Sub
+    
+    
+'in the event a file from a previous day isnt uploaded the user can manually input the name and update the master sheet
+Sub manualUpdate()
+    Application.ScreenUpdating = False
+    ActiveWindow.Zoom = 100 'Set zoom at 100% to avoid positioning errors
+    
+    getCols
+    
+    lastRow "List-OnlineClass", "log"
+    
+    getNames
+
+    folderPath = ThisWorkbook.Path + "\"
+
+    dailyFileName = InputBox("Please Copy And Paste The Daily File You'd Like To Use To Update The Master Sheet", "Manual Update")
+    
+    Dim dailyFound As Boolean
+    dailyFound = False
+
+    'checking if file is in folder
+    Dim file As String
+    file = Dir(folderPath)
+    Do While Len(file) > 0
+        If file = dailyFileName & ".csv" Then 'if found move on
+            dailyFound = True
+            Exit Do
+        End If
+        
+        file = Dir
+    Loop
+    
+    If dailyFound = False Then 'if not found end
+        MsgBox "Please Check You've Downloaded Today's Daily File In The Same Folder As Your Master WorkBook And That You Correctly Inputted The File Name", vbOKOnly + vbCritical, "Daily File Not Found"
+        Exit Sub
+    End If
+    
+    lastRow dailyFileName, 1
+    
+    Dim newEnrollments As Integer
+    Dim passes As Integer
+    
+    'now here is where names from daily sheet are compared to master sheet and if new, added
+    Dim currDailyName As String
+    Dim currDailyEmail As String
+    Dim i As Integer
+    For i = 2 To finalDailyRow - 1
+        Dim testPassDate As String
+        Dim temporary As String
+        currDailyName = LCase(Workbooks(dailyFileName).Worksheets(1).Range("A" & i).Value) + LCase(Workbooks(dailyFileName).Worksheets(1).Range("B" & i).Value)
+        currDailyEmail = LCase(Workbooks(dailyFileName).Worksheets(1).Range("C" & i).Value)
+        If InStr(masterSheetEmails, currDailyEmail) = 0 And InStr(testNames, currDailyName) = 0 Then 'InStr(masterSheetEmails, currDailyEmail) = 0 Or InStr(masterSheetNames, currDailyName) = 0 And InStr(testNames, currDailyName) = 0 Then 'if not in list then add it to the master list
+            masterSheetEmails = masterSheetEmails + currDailyEmail
+            masterSheetNames = masterSheetNames + currDailyName
+            
+            newEnrollments = newEnrollments + 1
+            
+            'copying over formulas
+            Workbooks("List-OnlineClass").Worksheets("log").Rows(finalMasterRow - 1).Copy
+            Workbooks("List-OnlineClass").Worksheets("log").Rows(finalMasterRow).PasteSpecial Paste:=xlPasteFormulas, Operation:=xlNone, SkipBlanks:=False, Transpose:=False
+            Workbooks("List-OnlineClass").Worksheets("log").Rows(finalMasterRow).PasteSpecial Paste:=xlPasteFormats, Operation:=xlNone, SkipBlanks:=False, Transpose:=False
+            'Workbooks("List-OnlineClass").Worksheets("log").Rows(finalMasterRow - 1).EntireRow.Copy Workbooks("List-OnlineClass").Worksheets("log").Rows(finalMasterRow)
+            Workbooks("List-OnlineClass").Worksheets("log").Range(passDateCol & finalMasterRow).Value = ""
+            
+            'master log values being set to daily log values
+            Workbooks("List-OnlineClass").Worksheets("log").Range(lNameCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("A" & i).Value 'LastName
+            Workbooks("List-OnlineClass").Worksheets("log").Range(fNameCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("B" & i).Value 'FirstName
+            Workbooks("List-OnlineClass").Worksheets("log").Range(countyCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("H" & i).Value 'County
+            Workbooks("List-OnlineClass").Worksheets("log").Range(cityCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("G" & i).Value 'City
+            Workbooks("List-OnlineClass").Worksheets("log").Range(zipCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("J" & i).Value 'Zip Code
+            Workbooks("List-OnlineClass").Worksheets("log").Range(addressCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("E" & i).Value 'Address
+            Workbooks("List-OnlineClass").Worksheets("log").Range(emailCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("C" & i).Value 'Email
+            Workbooks("List-OnlineClass").Worksheets("log").Range(phoneCol & finalMasterRow).Value = Workbooks(dailyFileName).Worksheets(1).Range("D" & i).Value 'Phone
+            
+            
+            'copying over website/assignment time data/metadata
+            Workbooks("List-OnlineClass").Worksheets("log").Range("AV" & finalMasterRow & ":" & "BD" & finalMasterRow).Copy Workbooks(dailyFileName).Worksheets(1).Range("S" & i & ":" & "AD" & i)
+            
+            
+            'Enrollment Date, convert 2023-05-03 16:11:31.307000-05:00 to 05/03/2023
+            Dim enrollDay As String
+            
+            Dim temp As String
+            temp = Workbooks(dailyFileName).Worksheets(1).Range("M" & i).Value
+            
+            enrollDay = Mid(temp, 6, 2) & "/" & Mid(temp, 9, 2) & "/" & Left(temp, 4)
+            
+            Workbooks("List-OnlineClass").Worksheets("log").Range(enrollDateCol & finalMasterRow).Value = enrollDay
+            
+            'Check if they passed, if they did add date they did to master log
+            If Workbooks(dailyFileName).Worksheets(1).Range("R" & i).Value <> "" Then
+                passes = passes + 1
+                
+                temporary = Workbooks(dailyFileName).Worksheets(1).Range("R" & i).Value
+                
+                testPassDate = Mid(temporary, 6, 2) & "/" & Mid(temporary, 9, 2) & "/" & Left(temporary, 4)
+                
+                Workbooks("List-OnlineClass").Worksheets("log").Range(passDateCol & finalMasterRow).Value = testPassDate
+            End If
+            
+            'removing county keyword so formulas work
+            Workbooks("List-OnlineClass").Worksheets("log").Range(countyCol & finalMasterRow).Value = Replace(Workbooks("List-OnlineClass").Worksheets("log").Range(countyCol & finalMasterRow).Value, " county", "")
+            Workbooks("List-OnlineClass").Worksheets("log").Range(countyCol & finalMasterRow).Value = Replace(Workbooks("List-OnlineClass").Worksheets("log").Range(countyCol & finalMasterRow).Value, " County", "")
+            
+            insertEmailButton Workbooks("List-OnlineClass").Worksheets("log").Range(missingEmailCol & finalMasterRow)
+            insertCertButton Workbooks("List-OnlineClass").Worksheets("log").Range(certCol & finalMasterRow)
+            
+            finalMasterRow = finalMasterRow + 1
+        Else
+            'Check if they passed, if they did add date they did to master log
+            If Workbooks(dailyFileName).Worksheets(1).Range("R" & i).Value <> "" And InStr(testNames, currDailyName) = 0 Then
+                'find what row theyre in
+                Dim h
+                h = 2
+                Do While h < finalMasterRow
+                    If currDailyName = (LCase(Workbooks("List-OnlineClass").Worksheets("log").Range(lNameCol & h).Value) & LCase(Workbooks("List-OnlineClass").Worksheets("log").Range(fNameCol & h).Value)) Then
+                        Exit Do
+                    End If
+                    h = h + 1
+                Loop
+                If Workbooks("List-OnlineClass").Worksheets("log").Range(passDateCol & h).Value = "" And Workbooks("List-OnlineClass").Worksheets("log").Range(emailCol & h).Value = currDailyEmail Then
+                    passes = passes + 1
+                    temporary = Workbooks(dailyFileName).Worksheets(1).Range("R" & i).Value
+                    
+                    testPassDate = Mid(temporary, 6, 2) & "/" & Mid(temporary, 9, 2) & "/" & Left(temporary, 4)
+                    
+                    Workbooks("List-OnlineClass").Worksheets("log").Range(passDateCol & h).Value = testPassDate
+                End If
+            End If
+        End If
+    Next
+    
+    If newEnrollments = 0 Then
+    'if no new enrollments today
+        Workbooks(dailyFileName).Close savechanges:=False, fileName:=dailyFileName
+        Application.Wait (Now + TimeValue("0:00:01"))
+        MsgBox "No New Enrollments Today", vbOKOnly + vbInformation, "Update Of Master Log Complete"
+    Else
+    'Show new enrollment and let user know update of master log is complete Update Of Master Log Complete
+        Workbooks(dailyFileName).Close savechanges:=False, fileName:=dailyFileName
+        Application.Wait (Now + TimeValue("0:00:01"))
+        MsgBox newEnrollments & " New Enrollments Today!", vbOKOnly + vbInformation, "Update Of Master Log Complete"
+    End If
+    
+    If passes = 0 Then
+        MsgBox "No New Passes Today!", vbOKOnly + vbInformation, "Update"
+    Else
+        MsgBox passes & " New Passes Today!", vbOKOnly + vbInformation, "Update"
+    End If
+    
+    Workbooks("List-OnlineClass").Worksheets("Menu").Range("A23").Value = Date
+    
+    Dim l
+    For l = finalMasterRow - newEnrollments To finalMasterRow - 1
+        insertEmailButton Workbooks("List-OnlineClass").Worksheets("log").Range(missingEmailCol & l)
+        insertCertButton Workbooks("List-OnlineClass").Worksheets("log").Range(certCol & l)
+    Next
+    
+    ActiveWindow.Zoom = 65 'Restore previous zoom
+    Workbooks("List-OnlineClass").Worksheets("Menu").Activate
+    Application.ScreenUpdating = True
+    
+    'making menu reappear
+    ActiveWindow.ScrollRow = 1
+    ActiveWindow.ScrollRow = 2
+    ActiveWindow.ScrollRow = 3
+    ActiveWindow.ScrollRow = 2
+    ActiveWindow.ScrollRow = 1
+    
+    Workbooks("List-OnlineClass").Save
+    
+End Sub
+
+'-----------------------------------------------------------------------------------------------------------------
+
+
+'AUTO EMAIL-----------------------------------------------------------------------------------------------------
+Sub missingEmail(currRow As Integer)
+    Dim EmailApp As Outlook.Application
+    Set EmailApp = New Outlook.Application
+
+    Dim EmailItem As Outlook.MailItem
+    Set EmailItem = EmailApp.CreateItem(olMailItem)
+
+    'Change the template file folder path according to your case
+    Set EmailItem = EmailApp.CreateItemFromTemplate(ThisWorkbook.Path & "\HO to Learner (missing information).oft")
+
+    EmailItem.To = Workbooks("List-OnlineClass").Worksheets("log").Range(emailCol & currRow).Value
+
+    EmailItem.HTMLBody = Replace(EmailItem.HTMLBody, "LEARNERNAME", Workbooks("List-OnlineClass").Worksheets("log").Range(fNameCol & currRow).Value & " " & Workbooks("List-OnlineClass").Worksheets("log").Range(lNameCol & currRow).Value)
+
+    EmailItem.Display
+
+    Set EmailApp = Nothing
+    Set EmailItem = Nothing
+End Sub
+
+'-----------------------------------------------------------------------------------------------------------------
+
+'AUTO CERTIFICATION-----------------------------------------------------------------------------------------------
+
+Sub makePDFs(inRow As Integer)
+    Dim outfolderPath
+    outfolderPath = ThisWorkbook.Path + "\output\"
+    
+    Dim dataTab As Worksheet
+    Dim templateTab As Worksheet
+    Dim fieldsTab As Worksheet
+    Dim activeTab As Worksheet
+    
+    Set dataTab = Worksheets("Data")
+    Set templateTab = Worksheets("Template")
+    Set fieldsTab = Worksheets("Fields")
+    Set activeTab = Worksheets("Active")
+    
+    'range of cells to replace in template
+    Dim targetRangeToReplace As String
+    targetRangeToReplace = "G14:G17"
+    Dim replaceRange As Range
+    Set replaceRange = activeTab.Range(targetRangeToReplace)
+    Dim templateRange As Range
+    Set templateRange = templateTab.Range(targetRangeToReplace)
+    
+    '(lastname)_(firstname).pdf column
+    Dim fileName As String
+    fileName = Replace(Workbooks("List-OnlineClass").Worksheets("log").Range(lNameCol & inRow).Value, " ", "") & "_" & Replace(Workbooks("List-OnlineClass").Worksheets("log").Range(fNameCol & inRow).Value, " ", "") & ".pdf"
+
+    'variable for path to certificate folder
+    Dim fullFilePath As String
+    
+    Dim pythonScriptPath As String
+
+            'copies template and pastes it on the active tab
+    templateRange.Copy replaceRange
+    
+    pythonScriptPath = ThisWorkbook.Path + "\"
+            'for each variable in the fields tab
+    Dim field As Range
+    Dim cell As Range
+    
+    For Each field In fieldsTab.Range(fieldsTab.Cells(2, 1), fieldsTab.Cells(fieldsTab.Cells(Rows.Count, 1).End(xlUp).Row, 1))
+        For Each cell In replaceRange
+            If InStr(cell.Value, "date") = 0 Then
+                cell.Value = Replace(cell.Value, field.Value, Workbooks("List-OnlineClass").Worksheets("log").Cells(inRow, flCol).Value)
+            Else
+                cell.Value = Replace(cell.Value, field.Value, Date)
+            End If
+        Next cell
+    Next field
+            
+        
+    'save to PDF
+    'reassign the fullFilePath to the certificate folder
+    fullFilePath = outfolderPath & fileName
+    'Dim encryptedPath As String
+    Dim encryptedPath
+    encryptedPath = outfolderPath & "encrypted_" & fileName
+        
+    'encrypt the file
+    activeTab.Range("A1:L30").ExportAsFixedFormat Type:=xlTypePDF, fileName:= _
+    fullFilePath _
+    , Quality:=xlQualityStandard, IncludeDocProperties:=True, IgnorePrintAreas _
+    :=False, From:=1, To:=1, OpenAfterPublish:=False
+        
+    'call subroutine to execute python script to protect with password
+    GeneratePDF fullFilePath, encryptedPath, pythonScriptPath
+        
+    Dim EmailApp As Outlook.Application
+    Dim Source As String
+    Set EmailApp = New Outlook.Application
+    
+    Dim EmailItem As Outlook.MailItem
+    Set EmailItem = EmailApp.CreateItem(olMailItem)
+    
+    EmailItem.To = Workbooks("List-OnlineClass").Worksheets("log").Range(emailCol & inRow).Value  'learner email
+    
+    On Error Resume Next
+    EmailItem.CC = Workbooks("List-OnlineClass").Worksheets("log").Range(ceaEmailCol & inRow).Value & ";" & Workbooks("List-OnlineClass").Worksheets("log").Range(ceaEmailCCCol & inRow).Value & ";" & Workbooks("List-OnlineClass").Worksheets("log").Range(drEmailCol & inRow).Value
+    Dim office
+    
+    If IsError(Workbooks("List-OnlineClass").Worksheets("log").Range(ceaOfficeEmailCol & inRow).Value) Then
+        office = "INSERT"
+    Else
+        office = Workbooks("List-OnlineClass").Worksheets("log").Range(ceaOfficeEmailCol & inRow).Value
+    End If
+    
+    EmailItem.Subject = "Certificate for the Homeowner ATU Online Program"
+
+    'body of the email
+    EmailItem.HTMLBody = "Dear " & Workbooks("List-OnlineClass").Worksheets("log").Cells(inRow, fNameCol).Value & " " & Workbooks("List-OnlineClass").Worksheets("log").Cells(inRow, lNameCol).Value & "," & "<br>" & "<br>" & _
+    "Congratulations for completing the training ""Homeowner Maintenance of Aerobic Treatment Units"". " & _
+    "We have processed your certificate and sent it to your County Extension Office. Please allow 2-3 business " & _
+    " days from this email and then schedule an appointment with your County Extension Agent (" & _
+    "CEA) to pick up your certificate. Remember to take with you a valid " & _
+    "form of photo identification." & "<br>" & "<br>" & _
+    "CEA Name: " & Workbooks("List-OnlineClass").Worksheets("log").Cells(inRow, ceaContactCol).Value & "<br>" & _
+    "CEA Email: " & Workbooks("List-OnlineClass").Worksheets("log").Range(ceaEmailCol & inRow).Value & "<br>" & _
+    "County Extension Website: " & Workbooks("List-OnlineClass").Worksheets("log").Cells(inRow, ceaWebsite).Value & "<br>" & "<br>" & _
+    "Feel free to contact me if you have any questions." & "<br>" & "<br>" & _
+    "Best Regards," & "<br>" & _
+    "Gabriele Bonaiti" & "<br>" & _
+    "p: +1 (979) 862-2593 | c: +1 (979) 922-4991 | f: +1 (979) 862-3442"
+
+    EmailItem.Display
+    Set EmailItem = Nothing
+
+    'email to CEA
+    Dim Email2
+    Set Email2 = EmailApp.CreateItem(olMailItem)
+    
+    'On Error Resume Next
+    Email2.To = Workbooks("List-OnlineClass").Worksheets("log").Range(ceaEmailCol & inRow).Value
+    Email2.CC = Workbooks("List-OnlineClass").Worksheets("log").Range(ceaEmailCCCol & inRow).Value
+    
+    
+    Email2.Subject = "Certificate for the Homeowner ATU Online Program"
+
+    'body of the email
+    Email2.HTMLBody = "Dear " & Workbooks("List-OnlineClass").Worksheets("log").Cells(inRow, ceaContactCol).Value & "," & "<br>" & "<br>" & _
+    "Please find attached certificate for the class ""Homeowner Maintenance of Aerobic Treatment Units"", " & _
+    "which is not signed. Please sign it and have it ready for pick up by the learner at your office. " & _
+    "We have also informed the learner and the local regulator via email about issuance of this certificate. " & _
+    "<br>" & "<br>" & "Let me know if you have any questions." & "<br>" & "<br>" & _
+    "Best Regards," & "<br>" & _
+    "Gabriele Bonaiti" & "<br>" & _
+    "p: +1 (979) 862-2593 | c: +1 (979) 922-4991 | f: +1 (979) 862-3442"
+
+    'attachments
+    Source = encryptedPath
+    Email2.Attachments.Add Source
+
+    'EmailItem.Display
+    Email2.Display
+    Set Email2 = Nothing
+    
+    
+End Sub
+
+Sub GeneratePDF(inputPath, outputPath, pythonScriptPath)
+    '  existing code to generate the PDF goes here
+    
+    ' Call the Python script to password protect the PDF
+    Dim pythonPath As String
+    Dim scriptPath As String
+    Dim outputFileExists As String
+   
+    'Dim inputPath As String
+    'Dim outputPath As String
+    Dim password As String
+    
+    pythonPath = "python.exe" ' Update the path to your Python executable"
+    scriptPath = pythonScriptPath & "password_protect_pdf.py" ' Update the path to your Python script
+    'inputPath = "last_name_first_name.pdf" ' Update the path to your input PDF file
+    'outputPath = "encrypted_last_name_first_name.pdf" ' Update the path to your output PDF file
+    password = "HO" ' Update the password to use for the PDF
+    
+    Dim shellArgs As String
+    shellArgs = pythonPath & " " & scriptPath & " " & inputPath & " " & outputPath & " " & password
+    Dim pid
+    pid = Shell(pythonPath & " " & scriptPath & " " & inputPath & " " & outputPath & " " & password, vbNormalFocus)
+    'wait for 1 second
+    Application.Wait (Now + TimeValue("0:00:01"))
+    outputFileExists = Dir(outputPath)
+    If outputFileExists = "" Then
+        'Wait for 3 seconds
+        Application.Wait (Now + TimeValue("0:00:03"))
+    End If
+    outputFileExists = Dir(outputPath)
+    If outputFileExists = "" Then
+        MsgBox "Encrypted file doesn't exist. File Name:" & outputPath
+    End If
+    
+    'pid = Shell(pythonPath & " " & scriptPath, vbNormalFocus)
+End Sub
+
+Sub insertEmailButton(Rng As Range)
+    Dim ws
+    Set ws = Workbooks("List-OnlineClass").Worksheets("log")
+    
+    Workbooks("List-OnlineClass").Worksheets("log").Activate
+'    Dim oldZoom As Integer
+'    oldZoom = ActiveWindow.Zoom
+'    Application.ScreenUpdating = False
+'    ActiveWindow.Zoom = 100 'Set zoom at 100% to avoid positioning errors
+    
+    Dim button
+    Set button = ws.Shapes.AddShape(msoShapeRectangle, Rng.Left, Rng.Top, Rng.Width, Rng.Height)
+    button.TextFrame.Characters.Text = "Email"
+    button.TextFrame.Characters.Font.Color = RGB(255, 255, 255)
+    button.TextFrame.Characters.Font.Size = 14
+    button.Fill.ForeColor.RGB = RGB(80, 0, 0)
+    button.OnAction = "'ThisWorkbook.missingEmail " & Rng.Row & "'"
+    
+'    ActiveWindow.Zoom = oldZoom 'Restore previous zoom
+'    Workbooks("List-OnlineClass").Worksheets("Menu").Activate
+'    Application.ScreenUpdating = True
+'
+'    'making menu reappear
+'    ActiveWindow.ScrollRow = 1
+'    ActiveWindow.ScrollRow = 2
+'    ActiveWindow.ScrollRow = 3
+'    ActiveWindow.ScrollRow = 2
+'    ActiveWindow.ScrollRow = 1
+End Sub
+
+Sub insertCertButton(Rng As Range)
+    Dim ws
+    Set ws = Workbooks("List-OnlineClass").Worksheets("log")
+    
+    Workbooks("List-OnlineClass").Worksheets("log").Activate
+'    Dim oldZoom As Integer
+'    oldZoom = ActiveWindow.Zoom
+'    Application.ScreenUpdating = False
+'    ActiveWindow.Zoom = 100 'Set zoom at 100% to avoid positioning errors
+    
+    Dim button
+    Set button = ws.Shapes.AddShape(msoShapeRectangle, Rng.Left, Rng.Top, Rng.Width, Rng.Height)
+    button.TextFrame.Characters.Text = "Cert"
+    button.TextFrame.Characters.Font.Color = RGB(255, 255, 255)
+    button.TextFrame.Characters.Font.Size = 14
+    button.Fill.ForeColor.RGB = RGB(80, 0, 0)
+    button.OnAction = "'ThisWorkbook.makePDFs " & Rng.Row & "'"
+    
+'    ActiveWindow.Zoom = oldZoom 'Restore previous zoom
+'    Workbooks("List-OnlineClass").Worksheets("Menu").Activate
+'    Application.ScreenUpdating = True
+'
+'    'making menu reappear
+'    ActiveWindow.ScrollRow = 1
+'    ActiveWindow.ScrollRow = 2
+'    ActiveWindow.ScrollRow = 3
+'    ActiveWindow.ScrollRow = 2
+'    ActiveWindow.ScrollRow = 1
+End Sub
+
+Sub DeleteShapesOnSheet()
+    'delete any previous shapes added
+    Dim W As Worksheet
+    Dim s As Shape
+    'refer to a given worksheet
+    Set W = ActiveSheet
+    'delete all of the shapes on it
+    For Each s In W.Shapes
+    s.Delete
+    Next s
+
+End Sub
+
+'-----------------------------------------------------------------------------------------------------------------
+
+Sub testFunc()
+    ActiveSheet.Range("AT606").Formula = ""
+End Sub
+
+Sub revertToDefault()
+    With Selection.Interior
+        .Pattern = xlNone
+        .TintAndShade = 0
+        .PatternTintAndShade = 0
+    End With
+    With Selection.Font
+        .ThemeColor = xlThemeColorLight1
+        .TintAndShade = 0
+    End With
+    
+'    Dim cell
+'    For Each cell In Selection
+'        If cell.Formula <> "" Then
+'            cell.Formula = "Paste 123"
+'        End If
+'    Next cell
+    Selection.Value = Selection.Value
+    
+End Sub
+
+'this is the torubleshoot function, when ran it'll reassign all global variables their values
+'This often solves the problem of global variables losing their reference
+Sub troubleshoot()
+    getCols
+    lastRow "List-OnlineClass", "log"
+    removeKeyWord
+    MsgBox "Please Save Your File And Resume The Process You Were Doing", vbOKOnly + vbInformation, "Troubleshooting Complete"
+End Sub
+
+Sub readd()
+    getCols
+    Dim o
+'    For o = 609 To 648
+'        insertEmailButton Workbooks("List-OnlineClass").Worksheets("log").Range(missingEmailCol & o)
+'        insertCertButton Workbooks("List-OnlineClass").Worksheets("log").Range(certCol & o)
+'    Next
+
+    For o = 648 To 652
+        insertEmailButton Workbooks("List-OnlineClass").Worksheets("log").Range(missingEmailCol & o)
+        insertCertButton Workbooks("List-OnlineClass").Worksheets("log").Range(certCol & o)
+    Next
+
+'    For o = first To last
+'        insertEmailButton Workbooks("List-OnlineClass").Worksheets("log").Range(missingEmailCol & o)
+'        insertCertButton Workbooks("List-OnlineClass").Worksheets("log").Range(certCol & o)
+'    Next
+End Sub
