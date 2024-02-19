@@ -1086,7 +1086,7 @@ End Sub
 
 Sub testFunc()
     'ActiveSheet.Range("AT606").Formula = ""
-    Debug.Print Date
+    Selection.Value = ""
 End Sub
 
 Sub revertToDefault()
@@ -1101,9 +1101,12 @@ Sub revertToDefault()
     End With
 
     Dim cell
-    For Each cell In Selection
+    Dim temp
+    For Each cell In Selection.Cells
         If cell.Formula <> "" Then
+            temp = cell.Value
             cell.Formula = ""
+            cell.Value = temp
         End If
     Next cell
     Selection.Value = Selection.Value
