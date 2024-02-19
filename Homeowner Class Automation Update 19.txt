@@ -1103,7 +1103,7 @@ Sub revertToDefault()
     Dim cell
     For Each cell In Selection
         If cell.Formula <> "" Then
-            cell.Formula = "Paste 123"
+            cell.Formula = ""
         End If
     Next cell
     Selection.Value = Selection.Value
