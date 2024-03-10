@@ -319,3 +319,9 @@ Programming and Meeting
 # 10/10/2023
 
 - Dropdown menu was not copied over. Program was not copying over validation format, it now does.
+
+#10/10/2023
+
+- Minor improvements: Adrressing bugs
+
+- Soon: Daily Assignment Report Logs Automation to come
