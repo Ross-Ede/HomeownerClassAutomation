@@ -1,18 +1,18 @@
 # Program Development
 
-## 6/19/2023
+# 6/19/2023
 
 - Meeting with Dr. Bonaiti learning about the process to be automated
 
 - developing plan/presentation as to how to automate process Dr. Bonaiti has presented to me
 
-## 6/20/2023
+# 6/20/2023
 
 - Meeting with Dr. Bonaiti discussing moving forward with the project. And advancements on his end, from website, towards automation of the project.
 
 - Laying out Visual Basic Application Worksheet/Module program to automate process for Dr. Bonaiti. Majority of time was spent looking into efficient forms of automatize.
 
-## 6/21/2023
+# 6/21/2023
 
 - First Design of UI created
 
@@ -22,7 +22,7 @@
 
     + Program adding new users to master sheet
 
-## 6/22/2023
+# 6/22/2023
 
 - Stuck at major roadblocks for 3 hours: figuring an efficient way to find the last row
 
@@ -36,7 +36,7 @@
 
     + Identify the daily file in the folder of the master sheet (assuming the only file in there are excel files with the standard daily file name)
 
-## 6/23/2023
+# 6/23/2023
 
 - Stabilizing program
 
@@ -46,7 +46,7 @@
               
 - User Likely needs to update master log from previous day hence new UI update, user can now auto update via pressing button and program will search directory for file matching system date. Or user can manually upload file from previous days.
 
-## 6/26/2023
+# 6/26/2023
 
 Programming and Meeting
 
@@ -70,7 +70,7 @@ Programming and Meeting
         
         ` Program can update master log with rows of unadded enrollments from daily log
 
-## 6/28/2023
+# 6/28/2023
 
 - Program is now capable of continuing on formatting and formulas of previous cells/rows, Some cell formulas are to be filled in by program, such as name. But this can be left alone in meantime as it can added easily and is up to the user whether they'd like this feature or not.
 
@@ -78,7 +78,7 @@ Programming and Meeting
 
 - Program can now semi-account for multiple enrollments. Meaning if it detects a change in an already enrolled persons data it will update if the data to add is not "not set". Once program can fully account for multiple enrollments it will be able only look at the persons most recent enrollment and change data in the master log as needed. Additionally, if data is missing, "not set", it can look at previous enrollments and try to find said missing data.
 
-## 6/29/2023
+# 6/29/2023
 
 - Program can now, in a stable bug free process, bulk update master log with data from multiple daily files. 
 
@@ -96,7 +96,7 @@ Programming and Meeting
     
     + Allow Dr. Bonaiti To email about missing assignments without having to input the email address manually
 
-## 6/30/2023
+# 6/30/2023
 
 - Meeting with Dr. Bonaiti in which we went over new developments
 
@@ -112,7 +112,7 @@ Programming and Meeting
                           
     + Actual master log with program included has been handed over to Dr. Bonaiti. Now awaiting feedback.
 
-## 7/3/2023
+# 7/3/2023
 
 - Meeting with Dr. Bonaiti and Dr. Jantrania
 
@@ -136,13 +136,13 @@ Programming and Meeting
                            
     + I implemented this feedback give giving more concise and hopefully clear instruction on how to update program code using step by step process and photos
 
-## 7/5/2023
+# 7/5/2023
 
 - Merging certification process with master workbook.
                           
     + Program is still incapable of generating password file, encrypted file, pdf file
 
-## 7/6/2023
+# 7/6/2023
 
 - Merging certification process with master workbook
                           
@@ -150,15 +150,15 @@ Programming and Meeting
                           
     + Program is still incapable of generating password file and encrypted file. Has constantly been throwing error in which file isn't found which is because program isn't even generating file to begin. May have to contact project team if I cant resolve it alone by the end of tomorrow
 
-## 7/7/2023
+# 7/7/2023
 
 - Program is now complete, automatic certification process and emailing process is functional. Aside from encryption which should work when Adobe Pro is installed
 
-## 7/10/2023
+# 7/10/2023
 
 - Reviewed what will be done this week in terms of what needs to done for the program and what the future of my internship may be
 
-## 7/12/2023
+# 7/12/2023
 
 - Program is now virtually finished
 
@@ -170,7 +170,7 @@ Programming and Meeting
 
     + some necessary cells need and keep their formulas and formatting, others which don't now don't have them anymore
 
-## 7/13/2023
+# 7/13/2023
 
 - Meeting with Dr. Bonaiti, Reviewing program improvements/recommendations
 
@@ -178,17 +178,17 @@ Programming and Meeting
     
     + Program is now capable of: Fix why it opens the file directory, make cert and email checkbox bigger, Allow email to be sent with some emails missing
 
-## 7/14/2023
+# 7/14/2023
 
 - Submitting final deliverable after stress testing and debugging program
 
-## 7/17/2023
+# 7/17/2023
 
 - Meeting with Dr. Bonaiti discussing additional changes and featues to the program along with issues he's encountering that need to be fixed
 
 - Programming trying to fix bugs, eventually moved on to adding features as bugs that are trying to be fixed are stubborn. Program now has have false and true in separate col and list of names who are used to test are again anyways
 
-## 7/19/2023
+# 7/19/2023
 
 - Re-did list of names in reverse order because after testing I realized it was last-first not first-last.   
               
@@ -200,7 +200,7 @@ Programming and Meeting
               
 - Allow Dr. Bonaiti to highlight area and revert it to default format, no fill, black text, no formula
 
-## 7/20/2023
+# 7/20/2023
 
 - Spent many hours in an attempt to solve the stubborn overlapping of checkboxes issue as it is starting to prove to be detrimental to the functionality of the program.
               
@@ -208,7 +208,7 @@ Programming and Meeting
               
 - I looked at many sources that seemed to have similar problems and/or solutions but none worked or where not applicable to the program
 
-## 7/21/2023
+# 7/21/2023
 
 - meeting with Dr. Bonaiti and discussing what needs to changed and fixed with the program
 
@@ -218,13 +218,13 @@ Programming and Meeting
           
 - Debugging prior to meeting but no significant improvements were made
 
-## 7/23/2023
+# 7/23/2023
 
 - Changed checkboxes to buttons to make program more functional. non functioning macros problem resolved and buttons are inserted in correct position. But overlapping is still an issue. But a trade off of buttons is they are less laggy and don't make overlapping noticeable. Right now functionality matters and buttons are the functional solution.
 
 - Also cleaned up a lot of the code as they were many unnecessary/unused lines of code in the file. Program went from ~1.2k lines of code to 991 lines of code
 
-## 7/26/2023
+# 7/26/2023
 
 - Documentation
     
@@ -245,12 +245,12 @@ Programming and Meeting
 
     + Program only uses emails and checks test names when adding enrollees no longer looks at names 
 
-## 7/27/2023
+# 7/27/2023
 
 - Programming
     + Researching and implementing a framework in preparation for adding new columns to master sheet update and outlook auto renaming
 
-## 7/28/2023
+# 7/28/2023
 
 - Documentation
                    
@@ -260,11 +260,11 @@ Programming and Meeting
 
     + outlook auto renaming complete
 
-## 7/31/2023
+# 7/31/2023
 
 - Helped Mr. Segura setup program on his laptop
 
-## 8/2/2023
+# 8/2/2023
 
 - Program now pre adds enrollee metadata to mastersheet (due for change as we havent actually recieved the daily file which will contain metadata)
 
@@ -323,5 +323,9 @@ Programming and Meeting
 #10/10/2023
 
 - Minor improvements: Adrressing bugs
+
+    + Issues updating after long periods of inactivity
+
+    + Issues deleting data
 
 - Soon: Daily Assignment Report Logs Automation to come

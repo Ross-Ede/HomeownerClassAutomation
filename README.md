@@ -44,6 +44,10 @@ Button 1 - Email | Will Automatically Generate A Missing Assignment/Information 
 
 Button 2 - Cert | Will Automatically Generate An Encrypted And Non-Encrypted Course Certification pdf For The Enrollee In The Row In Which The Button Was Click. Then Will Create Two Emails, One To The Enrollee's CEA and One To The Enrollee With The Enrollee's Course Certification
 
+#### To delete data
+  1. right-click the row number and only select clear contents
+  2. Fill in all blank cells in Column A with a character(s) Ex. "blank" or "." or "," 
+
 ## Troubleshooting
 
 #### Firstly Please Ensure You've Run The Troubleshoot Button In The Program Menu
