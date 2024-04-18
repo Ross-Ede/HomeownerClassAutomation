@@ -329,3 +329,13 @@ Programming and Meeting
     + Issues deleting data
 
 - Soon: Daily Assignment Report Logs Automation to come
+
+# 4/18/2024
+
+- Daily File Format changed. Changed program variables to account for this
+
+- Coming ahead:
+
+    + New input from a "survey response" file to come (Postponed due to missing User ID in master file and/or missing emails in "Survey Response" file. *A 'unique to each user' is required in the program for differentiation.)
+
+    + To allow for more flexibility when changed format of inputs. Apply same method of variability allowed on master file on input files in order to create ease of use for user.
