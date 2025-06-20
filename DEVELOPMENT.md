@@ -345,3 +345,8 @@ Programming and Meeting
 - Master Log enrollees now have corresponding User ID's (Aside from roughly 20 enrollees)
 
 - Survey Response Update Feature completed and added
+
+# 6/20/2025
+
+- Survey Respone Update Feauture Fully transferred and functional
+    + Had to reverted search method back to Do While since .Find requires concatenated first and last names in a single column
