@@ -350,3 +350,25 @@ Programming and Meeting
 
 - Survey Respone Update Feauture Fully transferred and functional
     + Had to reverted search method back to Do While since .Find requires concatenated first and last names in a single column
+
+# 6/29/2025
+
+- Added userIDs for majority users in database
+    - Mainly relatively newer entries in database
+
+- For increased efficency, searching is now done based on user ID and, if needed, first+last name
+
+- Large change to code and UI
+    - Removed manual and singlular auto update, Reduces code maintance and length
+
+# 7/2/25 
+
+- Note: Update 24 was never pushed so it is overwritten with Update 25
+
+- Fixed certification, was searching for encrypted pdf that doesnt exist
+
+- Greatly improved runtime
+    - Troubleshoot --> removeKeyWord was main cause so optimizing this reduced runtime greatly
+    - getCols now use select case
+    - auto update freezes screen and calculations to save memory and speed
+    - Note: a current priortiy but will likely need to optimize survRep aswell
