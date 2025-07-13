@@ -365,7 +365,7 @@ Programming and Meeting
 
 - Note: Update 24 was never pushed so it is overwritten with Update 25
 
-- Fixed certification, was searching for encrypted pdf that doesnt exist
+- Fixed certification, was searching for encrypted pdf that doesnt exist yet due to pyPDF2 not installed for generation
 
 - Greatly improved runtime
     - Troubleshoot --> removeKeyWord was main cause so optimizing this reduced runtime greatly
