@@ -11,9 +11,9 @@
 
 ## Instructions On Use
 
-#### In The Menu Set Your Zoom To 95% For The Best User Experience
+#### In The Menu Set Your Zoom To 105% For The Best User Experience
 
-![alt text](https://github.com/Ross-Ede/HomeownerClassAutomation/blob/main/images/image-2.png?raw=true)
+![alt text](https://github.com/Ross-Ede/HomeownerClassAutomation/blob/main/images/img1.png?raw=true)
 
 Button 1 - Update Master Sheet (Automatic) | Instantly seeks out daily file matching system date and uses that file to update the enrollments
 
@@ -38,7 +38,7 @@ Button 5 - Revert To Default | This button will revert any highlighted area to b
 
 #### In The Log Set Your Zoom Between 50%-80% For Best User Experince
 
-![alt text](https://github.com/Ross-Ede/HomeownerClassAutomation/blob/main/images/image-1.png?raw=true)
+![alt text](https://github.com/Ross-Ede/HomeownerClassAutomation/blob/main/images/img2.png?raw=true)
 
 Button 1 - Email | Will Automatically Generate A Missing Assignment/Information Email For The Enrollee In Which The Row The Email Button Was Clicked
 
@@ -52,18 +52,18 @@ Button 2 - Cert | Will Automatically Generate An Encrypted And Non-Encrypted Cou
 
 #### Firstly Please Ensure You've Run The Troubleshoot Button In The Program Menu
 
-![alt text](https://github.com/Ross-Ede/HomeownerClassAutomation/blob/main/images/image-3.png?raw=true)
+![alt text](https://github.com/Ross-Ede/HomeownerClassAutomation/blob/main/images/img1.png?raw=true)
 
 #### Secondly, If That Doesnt Solve The Problem. Ensure Your References Are Correct
 
 1. While in the "List-OnlineClass" program, use Fn + Alt + F11 (or Alt + F11) To Open The Code Editor. You Should See A Screen Similar To The One Below
 
-![alt text](https://github.com/Ross-Ede/HomeownerClassAutomation/blob/main/images/image.png?raw=true)
+![alt text](https://github.com/Ross-Ede/HomeownerClassAutomation/blob/main/images/img3.png?raw=true)
 
 
 2. On This Screen Go To The Top Menu Bar > Tools > References. Then Ensure You Have Your References Checkboxed And Matching The References In The Image Below. (All Unchecked References Are In Alphabetical Order To Help Find Them)
 
-![alt text](https://github.com/Ross-Ede/HomeownerClassAutomation/blob/main/images/image-4.png?raw=true)
+![alt text](https://github.com/Ross-Ede/HomeownerClassAutomation/blob/main/images/img4.png?raw=true)
 
 3. Then Once You've Checkboxed All References, Press "OK". Then Use Ctrl + S To Save Your Changes
 
@@ -73,23 +73,21 @@ Button 2 - Cert | Will Automatically Generate An Encrypted And Non-Encrypted Cou
 1. Ensure Your In The "MAIN" Branch Of The HomeownerClassAutomation GitHub Repository
 
 2. Select The Most Recent/Update To Date HomeownerClass Automation.txt File (Generally At The Bottom Out Of All The Files. Can Also Be Double Checked By Checking Which File Has The Largest Update Number)
-  - At The Time Of Writing This, The Most Recent Update Is "Homeowner Class Automation Update 23.txt"
-
-![alt text](https://github.com/Ross-Ede/HomeownerClassAutomation/blob/main/images/image-5.png?raw=true)
+  - At The Time Of Writing This, The Most Recent Update Is "Homeowner Class Automation Update 26.txt"
 
 3. Copy All Of The Code In This File Using Ctrl + C After Highlighting All The Code In This File.
 
 4. In Your "List-OnlineClass" File, Use Fn + Alt + F11 (or Alt + F11) To Open The Code Editor. Your Screen Should Be Similar To The Screen In The Image Below.
 
-![alt text](https://github.com/Ross-Ede/HomeownerClassAutomation/blob/main/images/image.png?raw=true)
+![alt text](https://github.com/Ross-Ede/HomeownerClassAutomation/blob/main/images/img3.png?raw=true)
 
 5. In The Left-Hand Bar Of The Code Editor, Double Click "Thisworkbook". 
 
-![alt text](https://github.com/Ross-Ede/HomeownerClassAutomation/blob/main/images/image-6.png?raw=true)
+![alt text](https://github.com/Ross-Ede/HomeownerClassAutomation/blob/main/images/img5.png?raw=true)
 
 6. Click On The Large Right Pane (Highlighted In The Image Below) Use Ctrl + A Then The "Delete" Button To Remove Any Previous Code. Then Use Ctrl + V To Insert The Code You Copied Earlier From The Update File.
 
-![alt text](https://github.com/Ross-Ede/HomeownerClassAutomation/blob/main/images/image-7.png?raw=true)
+![alt text](https://github.com/Ross-Ede/HomeownerClassAutomation/blob/main/images/img6.png?raw=true)
 
 7. Please Refer Back To "Ensure Your References Are Correct" Step Above To Ensure None Of Your References Changed During The Update
 

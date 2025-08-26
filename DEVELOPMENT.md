@@ -372,3 +372,8 @@ Programming and Meeting
     - getCols now use select case
     - auto update freezes screen and calculations to save memory and speed
     - Note: a current priortiy but will likely need to optimize survRep aswell
+
+# 8/26/25
+
+- Added Optinal Certificate Button that includes signature and new email format
+- Fixed survey response update to include Authorized Agent and Manufacturer/Technology
