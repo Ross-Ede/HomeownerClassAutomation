@@ -377,3 +377,12 @@ Programming and Meeting
 
 - Added Optinal Certificate Button that includes signature and new email format
 - Fixed survey response update to include Authorized Agent and Manufacturer/Technology
+
+# 9/13/25
+
+- Survey Updates
+    - Fixed Header Deletion upon survey update
+    - Technology column only copys over name, no alias
+    - Issues in Column R --> Column U "notes" columns
+
+- To Be Addressed: Opt Cert Working well at first then breaks then
