@@ -184,7 +184,7 @@ Programming and Meeting
 
 # 7/17/2023
 
-- Meeting with Dr. Bonaiti discussing additional changes and featues to the program along with issues he's encountering that need to be fixed
+- Meeting with Dr. Bonaiti discussing additional changes and features to the program along with issues he's encountering that need to be fixed
 
 - Programming trying to fix bugs, eventually moved on to adding features as bugs that are trying to be fixed are stubborn. Program now has have false and true in separate col and list of names who are used to test are again anyways
 
@@ -266,7 +266,7 @@ Programming and Meeting
 
 # 8/2/2023
 
-- Program now pre adds enrollee metadata to mastersheet (due for change as we havent actually recieved the daily file which will contain metadata)
+- Program now pre adds enrollee metadata to mastersheet (due for change as we haven't actually received the daily file which will contain metadata)
 
 - presentation for 8/8/23 done
 
@@ -322,7 +322,7 @@ Programming and Meeting
 
 #10/10/2023
 
-- Minor improvements: Adrressing bugs
+- Minor improvements: Addressing bugs
 
     + Issues updating after long periods of inactivity
 
@@ -348,7 +348,7 @@ Programming and Meeting
 
 # 6/20/2025
 
-- Survey Respone Update Feauture Fully transferred and functional
+- Survey Response Update Feature Fully transferred and functional
     + Had to reverted search method back to Do While since .Find requires concatenated first and last names in a single column
 
 # 6/29/2025
@@ -356,33 +356,42 @@ Programming and Meeting
 - Added userIDs for majority users in database
     - Mainly relatively newer entries in database
 
-- For increased efficency, searching is now done based on user ID and, if needed, first+last name
+- For increased efficiency, searching is now done based on user ID and, if needed, first+last name
 
 - Large change to code and UI
-    - Removed manual and singlular auto update, Reduces code maintance and length
+    - Removed manual and singular auto update, Reduces code maintenance and length
 
 # 7/2/25 
 
 - Note: Update 24 was never pushed so it is overwritten with Update 25
 
-- Fixed certification, was searching for encrypted pdf that doesnt exist yet due to pyPDF2 not installed for generation
+- Fixed certification, was searching for encrypted pdf that doesn't exist yet due to pyPDF2 not installed for generation
 
 - Greatly improved runtime
     - Troubleshoot --> removeKeyWord was main cause so optimizing this reduced runtime greatly
     - getCols now use select case
     - auto update freezes screen and calculations to save memory and speed
-    - Note: a current priortiy but will likely need to optimize survRep aswell
+    - Note: a current priority but will likely need to optimize survRep as well
 
 # 8/26/25
 
-- Added Optinal Certificate Button that includes signature and new email format
+- Added Optional Certificate Button that includes signature and new email format
 - Fixed survey response update to include Authorized Agent and Manufacturer/Technology
 
 # 9/13/25
 
 - Survey Updates
     - Fixed Header Deletion upon survey update
-    - Technology column only copys over name, no alias
+    - Technology column only copies over name, no alias
     - Issues in Column R --> Column U "notes" columns
 
 - To Be Addressed: Opt Cert Working well at first then breaks then
+
+# 9/21/25
+
+- The enrollment button now updates using daily files and survey files all at once so you no longer need to use the survey update file.
+    - Removed redundancy of having to first update enrollments then update survey files
+
+- column P Q R from survey file are copied into notes column as concatenated string
+
+- DR email included as CC in the email certificate option 2 (email to learner)
